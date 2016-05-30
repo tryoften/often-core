@@ -1,0 +1,48 @@
+{
+  "version": "v4",
+  "repo": "borisyankov/DefinitelyTyped",
+  "ref": "master",
+  "path": "typings",
+  "bundle": "typings/tsd.d.ts",
+  "installed": {
+    "backbone/backbone.d.ts": {
+      "commit": "e5a27ea95e47b95333784f1f0d590127b4e39a89"
+    },
+    "underscore/underscore.d.ts": {
+      "commit": "e5a27ea95e47b95333784f1f0d590127b4e39a89"
+    },
+    "jquery/jquery.d.ts": {
+      "commit": "e5a27ea95e47b95333784f1f0d590127b4e39a89"
+    },
+    "backbone/backbone-global.d.ts": {
+      "commit": "e5a27ea95e47b95333784f1f0d590127b4e39a89"
+    },
+    "node/node.d.ts": {
+      "commit": "dc9dabe74a5be62613b17a3605309783a12ff28a"
+    },
+    "es6-shim/es6-shim.d.ts": {
+      "commit": "bf4ecf5b68887ed5a065e3922885c34d0f5739df"
+    },
+    "node-schedule/node-schedule.d.ts": {
+      "commit": "ee9c524295333250ddbc7364f27c8b2ccd84b18a"
+    },
+    "react/react-addons-css-transition-group.d.ts": {
+      "commit": "bf4ecf5b68887ed5a065e3922885c34d0f5739df"
+    },
+    "react/react-addons-transition-group.d.ts": {
+      "commit": "bf4ecf5b68887ed5a065e3922885c34d0f5739df"
+    },
+    "object-path/object-path.d.ts": {
+      "commit": "e8f8e7471b8ca92ca417f8c878f64ae4d1067972"
+    },
+    "object-hash/object-hash.d.ts": {
+      "commit": "544a35a10866b32afda9c7f029c0764558563f4f"
+    },
+    "firebase/firebase.d.ts": {
+      "commit": "edb64e4a35896510ce02b93c0bca5ec3878db738"
+    },
+    "firebase-token-generator/firebase-token-generator.d.ts": {
+      "commit": "edb64e4a35896510ce02b93c0bca5ec3878db738"
+    }
+  }
+}

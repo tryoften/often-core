@@ -1,0 +1,17 @@
+{
+	"compilerOptions": {
+		"declaration": true,
+		"module": "CommonJS",
+		"target": "es5",
+		"noImplicitAny": true,
+		"outDir": "dist",
+        "noImplicitAny": false,
+        "removeComments": true,
+        "preserveConstEnums": true,
+        "sourceMap": true,
+        "outDir": "build"
+	},
+	"files": [
+		"src/core.ts"
+	]
+}
