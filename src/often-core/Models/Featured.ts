@@ -4,7 +4,7 @@ import MediaItemAttributes from '../Models/MediaItem';
 import MediaItemType from '../Models/MediaItemType';
 import BaseModel from "../Models/BaseModel";
 import MediaItem from "./MediaItem";
-import {IndexableObject} from "../Interfaces/Indexable";
+import { IndexableObject } from "../Interfaces/Indexable";
 
 export interface FeaturedAttributes {
 	id: string;
