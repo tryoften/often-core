@@ -1,5 +1,3 @@
-/// <reference path="../index.d.ts" />
-
 // Models
 export { default as BaseModel } from './often-core/Models/BaseModel';
 export { default as Artist } from './often-core/Models/Artist';

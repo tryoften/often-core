@@ -1,6 +1,6 @@
 {
   "name": "@often/often-core",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Core library for Often projects",
   "main": "dist/often-core.js",
   "typings": "dist/often-core.d.ts",
@@ -11,9 +11,6 @@
   "author": "Luc Succes <luc@tryoften.com>",
   "bugs": {
     "url": "https://github.com/tryoften/often-core/issues"
-  },
-  "typescript": {
-    "definition": "index.d.ts"
   },
   "homepage": "https://github.com/tryoften/often-core#readme",
   "dependencies": {
@@ -29,5 +26,8 @@
     "winston": "^1.1.2",
     "winston-firebase": "^0.2.1",
     "winston-gcl": "^1.3.0"
+  },
+  "devDependencies": {
+    "typescript": "^1.8.10"
   }
 }

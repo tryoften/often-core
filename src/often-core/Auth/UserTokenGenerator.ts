@@ -1,5 +1,3 @@
-/// <reference path="../../index.d.ts" />
-
 import FirebaseTokenGenerator = require('firebase-token-generator');
 import { firebase as FirebaseConfig } from '../config';
 import * as Firebase from 'firebase';
