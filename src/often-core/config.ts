@@ -1,3 +1,4 @@
+process.env.SUPPRESS_NO_CONFIG_WARNING = 'y';
 const config = require('config');
 
 var args = require('minimist')(process.argv.slice(2));
