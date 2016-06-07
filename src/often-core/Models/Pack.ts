@@ -9,17 +9,26 @@ import Category, {CategoryAttributes} from './Category';
 import {IndexableObject} from '../Interfaces/Indexable';
 import Featured from './Featured';
 
+
+export type UserId = string;
+export type PackMeta = Object;
+
 export interface IndexablePackItem extends IndexableObject {
 	id?: string;
 	category?: CategoryAttributes;
-}
+};
 
 export interface PackAttributes extends MediaItemAttributes {
 	id?: string;
 	name?: string;
+	imageId?: string;
 	image?: {
-		small_url?: string;
-		large_url?: string;
+		square_small_url?: string,
+		square_url?: string,
+		small_url?: string,
+		medium_url?: string,
+		original_url?: string,
+		large_url?: string
 	};
 	price?: number;
 	premium?: boolean;
@@ -33,7 +42,7 @@ export interface PackAttributes extends MediaItemAttributes {
 	isFavorites?: boolean;
 	isRecents?: boolean;
 	shareCount?: number;
-}
+};
 
 export interface PackIndexableObject extends PackAttributes {}
 
@@ -41,9 +50,6 @@ export interface MediaItemInfo {
 	type: MediaItemType;
 	id: string;
 }
-
-export type UserId = string;
-export type PackMeta = Object;
 
 class Pack extends MediaItem {
 
@@ -188,6 +194,24 @@ class Pack extends MediaItem {
 		featuredPacks.syncData().then( (fp) => {
 			this.featured ? featuredPacks.addFeaturedItem(this) : featuredPacks.removeFeaturedItem(this.id);
 		});
+	}
+
+	setItemPosition(itemId: string, newIndex: number) {
+
+		let items = this.items;
+		if (newIndex < 0 || newIndex >= items.length) {
+			return false;
+		}
+		let oldIndex = _.findIndex(items, (itm) => itm.id === itemId);
+
+		let item = items[oldIndex];
+		items.splice(oldIndex, 1);
+		items.splice(newIndex, 0, item);
+
+		this.save({
+			items: items
+		});
+
 	}
 
 	assignCategoryToItem (itemId: string, category: Category) {
