@@ -8,6 +8,9 @@
     "type": "git",
     "url": "git+https://github.com/tryoften/often-core.git"
   },
+  "browser": {
+    "config": "./client-config.js"
+  },
   "author": "Luc Succes <luc@tryoften.com>",
   "bugs": {
     "url": "https://github.com/tryoften/often-core/issues"
