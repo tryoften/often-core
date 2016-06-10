@@ -28,7 +28,7 @@ class BaseModel extends Firebase.Model {
 			this.objectMap = new ObjectMap({
 				id: attributes.id,
 				type: attributes.type
-			});
+			}, options);
 		}
 	}
 

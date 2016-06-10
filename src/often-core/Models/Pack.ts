@@ -59,7 +59,7 @@ class Pack extends MediaItem {
 	 * @param attributes {PackAttributes}
 	 * @param options
 	 */
-	constructor(attributes: PackAttributes = {}, options: any = {autoSync: false, setObjectMap: true}) {
+	constructor(attributes: PackAttributes = {}, options: any = {autoSync: false, setObjectMap: true, deepSync: false, prodRoot: null}) {
 		attributes = _.defaults(attributes, {
 			type: MediaItemType.pack,
 			source: MediaItemSource.Often
@@ -72,6 +72,15 @@ class Pack extends MediaItem {
 
 		super(attributes, options);
 
+
+	}
+
+	initialize (attributes: PackAttributes, options: any) {
+		if (options.prodRoot) {
+			this.url =  new Firebase(`${options.prodRoot}/packs/${attributes.id}`);
+		} else {
+			this.url =  new Firebase(`${FirebaseConfig.BaseURL}/packs/${attributes.id}`);
+		}
 	}
 
 	defaults(): Backbone.ObjectHash {
@@ -93,10 +102,6 @@ class Pack extends MediaItem {
 			isFavorites: false,
 			isRecents: false
 		};
-	}
-
-	get url(): Firebase {
-		return new Firebase(`${FirebaseConfig.BaseURL}/packs/${this.id}`);
 	}
 
 	get name(): string {
