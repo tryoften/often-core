@@ -59,7 +59,7 @@ class Pack extends MediaItem {
 	 * @param attributes {PackAttributes}
 	 * @param options
 	 */
-	constructor(attributes: PackAttributes = {}, options: any = {autoSync: false, setObjectMap: true, deepSync: false, prodRoot: null}) {
+	constructor(attributes: PackAttributes = {}, options: any = {autoSync: false, setObjectMap: true, deepSync: false, rootUrl: null}) {
 		attributes = _.defaults(attributes, {
 			type: MediaItemType.pack,
 			source: MediaItemSource.Often
@@ -76,8 +76,8 @@ class Pack extends MediaItem {
 	}
 
 	initialize (attributes: PackAttributes, options: any) {
-		if (options.prodRoot) {
-			this.url =  new Firebase(`${options.prodRoot}/packs/${attributes.id}`);
+		if (options.rootUrl) {
+			this.url =  new Firebase(`${options.rootUrl}/packs/${attributes.id}`);
 		} else {
 			this.url =  new Firebase(`${FirebaseConfig.BaseURL}/packs/${attributes.id}`);
 		}
@@ -162,7 +162,7 @@ class Pack extends MediaItem {
 			name: this.name,
 			image: this.image,
 			categories: this.categories,
-			desscription: this.description,
+			description: this.description,
 			items: this.items,
 			premium: this.premium,
 			featured: this.featured,
