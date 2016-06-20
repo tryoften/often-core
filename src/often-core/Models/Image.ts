@@ -1,8 +1,7 @@
-import BaseModel from './BaseModel';
+import BaseModel, { BaseModelAttributes }  from './BaseModel';
 import { firebase as FirebaseConfig } from '../config';
 import { generateURIfromGuid } from '../Utilities/generateURI';
 import BaseModelType from './BaseModelType';
-import { BaseModelAttributes } from './BaseModel';
 
 const sha1 = require('sha1');
 
