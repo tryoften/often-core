@@ -1,6 +1,6 @@
 {
   "name": "@often/often-core",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Core library for Often projects",
   "main": "dist/often-core.js",
   "typings": "dist/often-core.d.ts",
