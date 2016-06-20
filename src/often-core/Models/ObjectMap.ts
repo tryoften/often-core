@@ -13,10 +13,11 @@ export interface ObjectMapAttributes {
 }
 
 class ObjectMap extends BackboneFire.Model {
+	protected rootURL: Firebase;
 	protected rootRef: Firebase;
 	protected deepSync: boolean;
 
-	constructor(attributes: ObjectMapAttributes, options: any = {autoSync: false, deepSync: false}) {
+	constructor(attributes: ObjectMapAttributes, options: any = {}) {
 		if (!attributes.type) {
 			throw new Error('Type must be defined in object map attributes.');
 		}
@@ -25,10 +26,23 @@ class ObjectMap extends BackboneFire.Model {
 			throw new Error('ItemId must be defined in object map attributes');
 		}
 
-		super(attributes, options);
+		options = _.defaults(options, {
+			autoSync: false,
+			deepSync: false,
+			rootURL: FirebaseConfig.BaseURL
+		});
 
-		this.rootRef = new Firebase(FirebaseConfig.BaseURL);
-		this.deepSync = options.deepSync;
+		super(attributes, options);
+	}
+
+	initialize (attributes, options) {
+			this.rootURL = new Firebase(`${options.rootURL}/object_map/${attributes.type}/${attributes.id}`);
+			this.rootRef = new Firebase(options.rootURL);
+			this.deepSync = options.deepSync;
+	}
+
+	get url(): Firebase {
+		return this.rootURL;
 	}
 
 	get type(): string {
@@ -46,10 +60,6 @@ class ObjectMap extends BackboneFire.Model {
 				}
 			});
 		});
-	}
-
-	get url(): Firebase {
-		return new Firebase(`${FirebaseConfig.BaseURL}/object_map/${this.get('type')}/${this.id}`);
 	}
 
 	get targets() {
