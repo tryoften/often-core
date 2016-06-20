@@ -53,35 +53,42 @@ export interface MediaItemInfo {
 
 class Pack extends MediaItem {
 
+	rootURL: Firebase;
 	/**
 	 * Designated constructor
 	 *
 	 * @param attributes {PackAttributes}
 	 * @param options
 	 */
-	constructor(attributes: PackAttributes = {}, options: any = {autoSync: false, setObjectMap: true, deepSync: false, rootUrl: null}) {
+	constructor(attributes: PackAttributes = {}, options: any = {}) {
 		attributes = _.defaults(attributes, {
 			type: MediaItemType.pack,
 			source: MediaItemSource.Often
+		});
+
+		options = _.defaults(options, {
+			autoSync: false,
+			setObjectMap: true,
+			deepSync: false,
+			rootURL: FirebaseConfig.BaseURL
 		});
 
 		if (!attributes.items) {
 			attributes.items = [];
 		}
 		attributes.type = MediaItemType.pack;
-
 		super(attributes, options);
-
-
 	}
 
 	initialize (attributes: PackAttributes, options: any) {
-		if (options.rootUrl) {
-			this.url =  new Firebase(`${options.rootUrl}/packs/${attributes.id}`);
-		} else {
-			this.url =  new Firebase(`${FirebaseConfig.BaseURL}/packs/${attributes.id}`);
-		}
+		this.rootURL = new Firebase(`${options.rootURL}/packs/${attributes.id}`);
 	}
+
+
+	get url(): Firebase {
+		return this.rootURL;
+	}
+
 
 	defaults(): Backbone.ObjectHash {
 		return {
