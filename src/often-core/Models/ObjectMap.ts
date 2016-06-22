@@ -1,10 +1,11 @@
-import { firebase as FirebaseConfig } from '../config';
 import * as Firebase from 'firebase';
 import 'backbonefire';
+import * as _ from 'underscore';
+import * as ObjectHash from 'object-hash';
 import { Firebase as BackboneFire } from 'backbone';
+import { firebase as FirebaseConfig } from '../config';
 import BaseModelType from "./BaseModelType";
 import BaseModel from "./BaseModel";
-import * as ObjectHash from 'object-hash';
 
 export interface ObjectMapAttributes {
 	type: BaseModelType;

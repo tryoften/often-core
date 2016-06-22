@@ -188,40 +188,35 @@ class User extends BaseModel {
 	public addPack (packAttributes: PackAttributes, subscriptionAttributes: SubscriptionAttributes = {}): Promise<Pack> {
 
 		var pack = new Pack(packAttributes);
-		return new Promise<any>((resolve, reject) => {
 
-			subscriptionAttributes.userId = this.id;
-			subscriptionAttributes.itemId = pack.id;
-			subscriptionAttributes.mediaItemType = MediaItemType.pack;
+		subscriptionAttributes.userId = this.id;
+		subscriptionAttributes.itemId = pack.id;
+		subscriptionAttributes.mediaItemType = MediaItemType.pack;
 
-			let packSubscription = new Subscription(subscriptionAttributes);
+		let packSubscription = new Subscription(subscriptionAttributes);
 
-			packSubscription.syncData().then(() => {
+		return packSubscription.syncData().then(() => {
 
-				/* If pack subscription doesn't have timeSubscribed defined, then subscribe the user */
-				if (!packSubscription.timeSubscribed) {
-					packSubscription.subscribe();
-					this.setSubscription(packSubscription);
-				}
+			/* If pack subscription doesn't have timeSubscribed defined, then subscribe the user */
+			if (!packSubscription.timeSubscribed) {
+				packSubscription.subscribe();
+				this.setSubscription(packSubscription);
+			}
 
-				/* If for whatever reason the pack is not set on user then restore it */
-				if (!this.packSubscriptions[packSubscription.id]) {
-					packSubscription.updateTimeLastRestored();
-					this.setSubscription(packSubscription);
-				}
-
-				return pack.syncData();
-			}).then(() => {
-				this.setPack(pack);
-				pack.setTarget(this, `/users/${this.id}/packs/${pack.id}`);
-				pack.save();
-				resolve(pack);
-			}).catch((err: Error) => {
-				reject(err);
-			});
+			/* If for whatever reason the pack is not set on user then restore it */
+			if (!this.packSubscriptions[packSubscription.id]) {
+				packSubscription.updateTimeLastRestored();
+				this.setSubscription(packSubscription);
+			}
+			packSubscription.save();
+			return pack.syncData();
+		}).then(() => {
+			this.setPack(pack);
+			pack.setTarget(this, `/users/${this.id}/packs/${pack.id}`);
+			pack.save();
+			this.save();
+			return pack;
 		});
-
-
 	}
 
 	/**
@@ -230,13 +225,12 @@ class User extends BaseModel {
 	 * @returns {Promise<string>} - Returns a promise that resolves to packId that was removed or to an error when rejected
 	 */
 	public removePack (packId: string): Promise<string> {
-		return new Promise<any>((resolve, reject) => {
-			var pack = new Pack({id: packId});
-			pack.syncData().then( () => {
-				pack.unsetTarget(this, `/users/${this.id}/packs/${pack.id}`);
-				this.unsetPack(packId);
-				resolve(packId);
-			});
+		var pack = new Pack({id: packId});
+		return pack.syncData().then( () => {
+			pack.unsetTarget(this, `/users/${this.id}/packs/${pack.id}`);
+			this.unsetPack(packId);
+			this.save();
+			return packId;
 		});
 	}
 
@@ -248,7 +242,7 @@ class User extends BaseModel {
 		let currentPackSubscriptions = this.packSubscriptions;
 		if (!currentPackSubscriptions[sub.id]) {
 			currentPackSubscriptions[sub.id] = sub.toIndexingFormat();
-			this.save({ pack_subscriptions: currentPackSubscriptions });
+			this.set({ pack_subscriptions: currentPackSubscriptions });
 		}
 	}
 
@@ -260,7 +254,7 @@ class User extends BaseModel {
 		let currentPacks = this.packs;
 		if (!currentPacks[pack.id]) {
 			currentPacks[pack.id] = pack.toIndexingFormat();
-			this.save({ packs: currentPacks });
+			this.set({ packs: currentPacks });
 		}
 	}
 
@@ -272,7 +266,7 @@ class User extends BaseModel {
 		let currentPacks = this.packs;
 		if (currentPacks[packId]) {
 			currentPacks[packId] = null;
-			this.save({ packs: currentPacks });
+			this.set({ packs: currentPacks });
 		}
 	}
 
