@@ -47,7 +47,7 @@ export default class GIF extends MediaItem {
 	}
 
 	get url(): Firebase {
-		return new Firebase(`${FirebaseConfig.BaseURL}/owners/${this.get('owner_id')}/gifs/${this.id}`);
+		return this.getFirebaseReference(`/owners/${this.get('owner_id')}/gifs/${this.id}`);
 	}
 
 	set(obj: any, options?: ModelSetOptions): Model {

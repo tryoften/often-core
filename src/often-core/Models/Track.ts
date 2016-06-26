@@ -30,7 +30,7 @@ class Track extends MediaItem {
 	}
 
 	get url(): Firebase {
-		return new Firebase(`${FirebaseConfig.BaseURL}/tracks/${this.id}`)
+		return this.getFirebaseReference(`/tracks/${this.id}`);
 	}
 
 	// TODO(jakub): create an interface for track that guarantees 'common' indexed fields

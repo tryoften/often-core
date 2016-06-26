@@ -29,16 +29,15 @@ class ObjectMap extends BackboneFire.Model {
 
 		options = _.defaults(options, {
 			autoSync: false,
-			deepSync: false,
-			rootURL: FirebaseConfig.BaseURL
+			deepSync: false
 		});
 
 		super(attributes, options);
 	}
 
 	initialize (attributes, options) {
-			this.rootURL = new Firebase(`${options.rootURL}/object_map/${attributes.type}/${attributes.id}`);
-			this.rootRef = new Firebase(options.rootURL);
+			this.rootURL = options.dbInstance.ref(`/object_map/${attributes.type}/${attributes.id}`);
+			this.rootRef = options.dbInstance;
 			this.deepSync = options.deepSync;
 	}
 

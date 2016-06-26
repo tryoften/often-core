@@ -69,8 +69,7 @@ class Pack extends MediaItem {
 		options = _.defaults(options, {
 			autoSync: false,
 			setObjectMap: true,
-			deepSync: false,
-			rootURL: FirebaseConfig.BaseURL
+			deepSync: false
 		});
 
 		if (!attributes.items) {
@@ -81,7 +80,8 @@ class Pack extends MediaItem {
 	}
 
 	initialize (attributes: PackAttributes, options: any) {
-		this.rootURL = new Firebase(`${options.rootURL}/packs/${attributes.id}`);
+		let dbInstance =  options.dbInstance || this.getFirebaseInstance();
+		this.rootURL = dbInstance.ref(`/packs/${attributes.id}`);
 	}
 
 

@@ -31,6 +31,4 @@ export { default as Images } from './often-core/Collections/Images';
 export { Indexable, IndexableObject } from './often-core/Interfaces/Indexable';
 export { CommandData } from './often-core/Interfaces/CommandData';
 export { ObjectMappable } from './often-core/Interfaces/ObjectMappable';
-export { Queryable } from './often-core/Interfaces/ObjectMappable';
-export { Requestable } from './often-core/Interface/Requestable';
 export { TopSearchesResult } from './often-core/Interfaces/TopSearchesData';
