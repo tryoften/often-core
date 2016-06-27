@@ -7,7 +7,7 @@ import { firebase as FirebaseConfig } from '../config';
 
 const firebase = require('firebase');
 firebase.initializeApp(FirebaseConfig.credentials);
-console.log("Initialized Firebase in Base Model");
+console.log("Initialized Firebase in Base Model", FirebaseConfig.credentials.databaseURL);
 
 export interface BaseModelAttributes {
 	id?: string;
