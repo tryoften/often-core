@@ -196,7 +196,6 @@ class User extends BaseModel {
 		let packSubscription = new Subscription(subscriptionAttributes);
 
 		return packSubscription.syncData().then(() => {
-
 			/* If pack subscription doesn't have timeSubscribed defined, then subscribe the user */
 			if (!packSubscription.timeSubscribed) {
 				packSubscription.subscribe();

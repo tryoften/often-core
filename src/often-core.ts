@@ -18,6 +18,7 @@ export { default as Quote, QuoteAttributes } from './often-core/Models/Quote';
 export { default as ShortenedURL } from './often-core/Models/ShortenedURL';
 export { default as Subscription, SubscriptionAttributes } from './often-core/Models/Subscription';
 export { default as Image } from './often-core/Models/Image';
+export { default as Notification } from './often-core/Models/Notification';
 
 // Collections
 export { default as Categories } from './often-core/Collections/Categories';
@@ -26,11 +27,10 @@ export { default as Packs } from './often-core/Collections/Packs';
 export { default as Subscriptions } from './often-core/Collections/Subscriptions';
 export { default as Users } from './often-core/Collections/Users';
 export { default as Images } from './often-core/Collections/Images';
+export { default as Notifications } from './often-core/Collections/Notifications';
 
 // Interfaces
 export { Indexable, IndexableObject } from './often-core/Interfaces/Indexable';
 export { CommandData } from './often-core/Interfaces/CommandData';
 export { ObjectMappable } from './often-core/Interfaces/ObjectMappable';
-export { Queryable } from './often-core/Interfaces/ObjectMappable';
-export { Requestable } from './often-core/Interface/Requestable';
 export { TopSearchesResult } from './often-core/Interfaces/TopSearchesData';
