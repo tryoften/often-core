@@ -27,7 +27,7 @@ class Artist extends MediaItem {
 	}
 
 	get url(): Firebase {
-		return new Firebase(`${FirebaseConfig.BaseURL}/artists/${this.id}`);
+		return this.getFirebaseReference(`/artists/${this.id}`);
 	}
 
 	public trackExists (songId: string) {

@@ -45,7 +45,7 @@ class Image extends BaseModel {
 	}
 
 	get url(): string {
-		return `${FirebaseConfig.BaseURL}/images/${this.id}`;
+		return this.getFirebaseReference(`/images/${this.id}`);
 	}
 
 	get resize_datetime(): Date {

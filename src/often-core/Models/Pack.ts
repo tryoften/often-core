@@ -44,6 +44,13 @@ export interface PackAttributes extends MediaItemAttributes {
 	shareCount?: number;
 };
 
+export interface PackOptions {
+	autoSync?: boolean;
+	setObjectMap?: boolean;
+	deepSync?: boolean;
+	rootRef?: Firebase;
+}
+
 export interface PackIndexableObject extends PackAttributes {}
 
 export interface MediaItemInfo {
@@ -60,7 +67,7 @@ class Pack extends MediaItem {
 	 * @param attributes {PackAttributes}
 	 * @param options
 	 */
-	constructor(attributes: PackAttributes = {}, options: any = {}) {
+	constructor(attributes: PackAttributes = {}, options: PackOptions = {}) {
 		attributes = _.defaults(attributes, {
 			type: MediaItemType.pack,
 			source: MediaItemSource.Often
@@ -69,8 +76,7 @@ class Pack extends MediaItem {
 		options = _.defaults(options, {
 			autoSync: false,
 			setObjectMap: true,
-			deepSync: false,
-			rootURL: FirebaseConfig.BaseURL
+			deepSync: false
 		});
 
 		if (!attributes.items) {
@@ -80,8 +86,9 @@ class Pack extends MediaItem {
 		super(attributes, options);
 	}
 
-	initialize (attributes: PackAttributes, options: any) {
-		this.rootURL = new Firebase(`${options.rootURL}/packs/${attributes.id}`);
+	initialize (attributes: PackAttributes, options: PackOptions) {
+		let rootRef =  options.rootRef || this.getFirebaseInstance();
+		this.rootURL = rootRef.ref(`/packs/${attributes.id}`);
 	}
 
 

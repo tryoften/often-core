@@ -84,7 +84,7 @@ class Subscription extends BaseModel implements Indexable {
 	}
 
 	get url(): Firebase {
-		return new Firebase(`${FirebaseConfig.BaseURL}/subscriptions/${this.mediaItemType}/${this.itemId}/${this.userId}/${this.id}`);
+		return this.getFirebaseReference(`/subscriptions/${this.mediaItemType}/${this.itemId}/${this.userId}/${this.id}`);
 	}
 
 	/**
