@@ -1,11 +1,11 @@
 import 'backbonefire';
-var firebase = require('firebase');
 import * as _ from 'underscore';
 import { Firebase } from 'backbone';
 import ObjectMap from './ObjectMap';
 import BaseModelType from "./BaseModelType";
 import { firebase as FirebaseConfig } from '../config';
 
+const firebase = require('firebase');
 firebase.initializeApp(FirebaseConfig.credentials);
 console.log("Initialized Firebase in Base Model");
 
@@ -15,10 +15,16 @@ export interface BaseModelAttributes {
 	setObjectMap?: boolean;
 }
 
+export interface BaseModelOptions {
+	autoSync: boolean;
+	setObjectMap?: boolean;
+	rootRef?: any;
+}
+
 class BaseModel extends Firebase.Model {
 	objectMap: ObjectMap;
 
-	constructor (attributes?: BaseModelAttributes, options: any = {autoSync: false, setObjectMap: false}) {
+	constructor (attributes?: BaseModelAttributes, options: BaseModelOptions = {autoSync: false, setObjectMap: false}) {
 		super(attributes, options);
 
 		if (options.setObjectMap) {
@@ -32,7 +38,7 @@ class BaseModel extends Firebase.Model {
 			}
 
 			options = _.defaults(options, {
-				dbInstance: this.getFirebaseInstance()
+				rootRef: this.getFirebaseInstance()
 			});
 
 			this.objectMap = new ObjectMap({

@@ -1,4 +1,3 @@
-import * as Firebase from 'firebase';
 import 'backbonefire';
 import * as _ from 'underscore';
 import * as ObjectHash from 'object-hash';
@@ -7,10 +6,18 @@ import { firebase as FirebaseConfig } from '../config';
 import BaseModelType from "./BaseModelType";
 import BaseModel from "./BaseModel";
 
+const Firebase = require('firebase');
+
 export interface ObjectMapAttributes {
 	type: BaseModelType;
 	id: string;
 	deepSync?: boolean;
+}
+
+export interface ObjectMapOptions {
+	autoSync: boolean;
+	deepSync?: boolean;
+	rootRef?: Firebase;
 }
 
 class ObjectMap extends BackboneFire.Model {
@@ -18,7 +25,7 @@ class ObjectMap extends BackboneFire.Model {
 	protected rootRef: Firebase;
 	protected deepSync: boolean;
 
-	constructor(attributes: ObjectMapAttributes, options: any = {}) {
+	constructor(attributes: ObjectMapAttributes, options: ObjectMapOptions = { autoSync: false, deepSync: false }) {
 		if (!attributes.type) {
 			throw new Error('Type must be defined in object map attributes.');
 		}
@@ -29,15 +36,16 @@ class ObjectMap extends BackboneFire.Model {
 
 		options = _.defaults(options, {
 			autoSync: false,
-			deepSync: false
+			deepSync: false,
+			rootRef: Firebase.database()
 		});
 
 		super(attributes, options);
 	}
 
 	initialize (attributes, options) {
-			this.rootURL = options.dbInstance.ref(`/object_map/${attributes.type}/${attributes.id}`);
-			this.rootRef = options.dbInstance;
+			this.rootURL = options.rootRef.ref(`/object_map/${attributes.type}/${attributes.id}`);
+			this.rootRef = options.rootRef;
 			this.deepSync = options.deepSync;
 	}
 
