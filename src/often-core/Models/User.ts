@@ -191,7 +191,7 @@ class User extends BaseModel {
 			mediaItemType: MediaItemType.pack
 		});
 
-		return new Subscription(attrs).syncData().then((packSubscription) => {
+		return new Subscription(attrs).syncData().then((packSubscription: Subscription) => {
 
 			let subscriptionContents = packSubscription.toIndexingFormat();
 
