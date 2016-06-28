@@ -6,6 +6,8 @@ export default class BaseModelType extends String {
 	static subscription: BaseModelType = 'subscription';
 	static user: BaseModelType = 'user';
 	static image: BaseModelType = 'image';
+	static notification: BaseModelType = 'notification';
+
 	static allTypes: BaseModelType[] = _.union(
 		MediaItemType.allTypes,
 		BaseModelType.category,
@@ -21,7 +23,8 @@ export default class BaseModelType extends String {
 				category: require('./Category').default,
 				subscription: require('./Subscription').default,
 				user: require('./User').default,
-				image: require('./Image').default
+				image: require('./Image').default,
+				notification: require('./Notification').default
 			});
 		}
 		return BaseModelType.mapping;

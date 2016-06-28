@@ -194,6 +194,7 @@ class User extends BaseModel {
 		return new Subscription(attrs).syncData().then((packSubscription) => {
 
 			let subscriptionContents = packSubscription.toIndexingFormat();
+
 			/* If pack subscription doesn't have timeSubscribed defined, then subscribe the user */
 			if (!packSubscription.timeSubscribed) {
 				packSubscription.subscribe();

@@ -9,7 +9,6 @@ import Category, {CategoryAttributes} from './Category';
 import {IndexableObject} from '../Interfaces/Indexable';
 import Featured from './Featured';
 
-
 export type UserId = string;
 export type PackMeta = Object;
 
@@ -91,11 +90,9 @@ class Pack extends MediaItem {
 		this.rootURL = rootRef.ref(`/packs/${attributes.id}`);
 	}
 
-
 	get url(): Firebase {
 		return this.rootURL;
 	}
-
 
 	defaults(): Backbone.ObjectHash {
 		return {
@@ -309,6 +306,7 @@ class Pack extends MediaItem {
 	 * Overwrite for base class's toIndexingFormat method
 	 *
 	 * @returns {IndexableObject}
+	 *
 	 */
 	public toIndexingFormat(): IndexableObject {
 		let data = _.extend({
