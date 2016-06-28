@@ -186,15 +186,13 @@ class User extends BaseModel {
 	 */
 	public addPack (packAttributes: PackAttributes, subscriptionAttributes: SubscriptionAttributes = {}): Promise<Pack> {
 
-		var pack = new Pack(packAttributes);
+		let attrs = Object.assign({}, subscriptionAttributes, {
+			userId: this.id,
+			itemId: packAttributes.id,
+			mediaItemType: MediaItemType.pack
+		});
 
-		subscriptionAttributes.userId = this.id;
-		subscriptionAttributes.itemId = pack.id;
-		subscriptionAttributes.mediaItemType = MediaItemType.pack;
-
-		let packSubscription = new Subscription(subscriptionAttributes);
-
-		return packSubscription.syncData().then(() => {
+		return new Subscription(attrs).syncData().then((packSubscription) => {
 
 			/* If pack subscription doesn't have timeSubscribed defined, then subscribe the user */
 			if (!packSubscription.timeSubscribed) {
@@ -208,8 +206,8 @@ class User extends BaseModel {
 				this.setSubscription(packSubscription);
 			}
 			packSubscription.save();
-			return pack.syncData();
-		}).then(() => {
+			return new Pack(packAttributes).syncData();
+		}).then( (pack: Pack) => {
 			this.setPack(pack);
 			pack.setTarget(this, `/users/${this.id}/packs/${pack.id}`);
 			this.save();
@@ -223,8 +221,7 @@ class User extends BaseModel {
 	 * @returns {Promise<string>} - Returns a promise that resolves to packId that was removed or to an error when rejected
 	 */
 	public removePack (packId: string): Promise<string> {
-		var pack = new Pack({id: packId});
-		return pack.syncData().then( () => {
+		return new Pack({id: packId}).syncData().then( (pack: Pack) => {
 			pack.unsetTarget(this, `/users/${this.id}/packs/${pack.id}`);
 			this.unsetPack(packId);
 			this.save();

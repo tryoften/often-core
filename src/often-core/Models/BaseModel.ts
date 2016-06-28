@@ -88,7 +88,9 @@ class BaseModel extends Firebase.Model {
 
 	public syncData(): Promise<any> {
 		if (this.objectMap) {
-			return Promise.all([ this.syncModel(), this.objectMap.syncModel()]);
+			return Promise.all([ this.syncModel(), this.objectMap.syncModel()]).then(() => {
+				return this;
+			});
 		}
 		return this.syncModel();
 	}
