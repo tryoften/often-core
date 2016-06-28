@@ -211,7 +211,6 @@ class User extends BaseModel {
 			this.setPack(pack.toIndexingFormat());
 			pack.setTarget(this, `/users/${this.id}/packs/${pack.id}`);
 			this.save();
-			return null;
 		});
 	}
 
@@ -225,7 +224,6 @@ class User extends BaseModel {
 			pack.unsetTarget(this, `/users/${this.id}/packs/${pack.id}`);
 			this.unsetPack(packId);
 			this.save();
-			return null;
 		});
 	}
 
