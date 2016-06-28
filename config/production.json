@@ -1,5 +1,13 @@
 {
 	"firebase": {
+		"credentials" : {
+			"serviceAccount": {
+				"projectId": "often-prod-85027",
+				"clientEmail": "test-894@often-prod-85027.iam.gserviceaccount.com",
+				"privateKey": "-----BEGIN PRIVATE KEY-----\nMIIEvAIBADANBgkqhkiG9w0BAQEFAASCBKYwggSiAgEAAoIBAQCiHYRK9GaHUF/y\nCqNNxWO6A97sGOBMFXFignM3kKjL2YmKJocFMsw0ALJ3HBokpwAB5ib5CfjjV65Y\nWGo1SHuBvQUgZ895097gcTa4NwCZLa9Ct+I2yATzMRT4KCgS0+zCdkF3fXxncAQv\n7DBsun12BmTictonWcwtK6UJPSyZoCWXMB2dWpeOKFRn7CjEkphMPuUtJ/AE/e1R\nQ01nyX/icoyTflK9Ul96WJE/CugpaVFEOXpM8rB6mOBCdbnnjnyn5D9lOOr9EbrV\n+MI2sAHeXCDyZXYo8Bhk2mbSIJdMC2d/6kDE2MPKaGyvfQgYwKJFaL292LBMSzWQ\nDf+sg/AtAgMBAAECggEAYag0RE7b4JGLaqv72eKZg7nHNSR7IXodVoFM1OEgvcPq\ntb0lwvzpxD3TRCs6mG+9cmdpfMYEFzd/gBqqyDREqk/qYa4HbtUxwrSQiQIhKyU5\nGZDaBbQSP0mG30KZeVYOnspL/6YpJcp1y0SVmznwUAPkDAGx5tiSRXewMFOYpWW4\nQQzREBVYIVi7gccTCWWLhfxoaa66AhWUUOroJgUiWM7yFx4I2Ef6s8vhWpQIHR1U\nC1q390JR4ZkA3LXyFUOc7zNtKMRywgox1KSAzs8u6NJ8WKOT8hybXnacI80+B42M\nQ783M1wLw/wbU4//nwste7ZzCMF22jbxCvYB2qOmJQKBgQD41H1K8Cbs/hBQx1GU\nO9lLACncXvN1bBhRIx0PvLu+a2MMC7uK1AdKcyF46MVcola0FgyF4k8XN7TJy5n2\n6E2RM9HNzXyNHMsv+KR/OTitkMLNZZHjO+nJZiRqBOeyhs4qbfKdrD7EBFR/3Lk/\n+yW+kq/Mf4O2feFbJjNe5vZDhwKBgQCmyV7eL+gMsbd0fG+semcCF+2X5Bh7Iv4e\nZeHCEX/4esfecBd+f6meg16Qo+UGnV0I/JCFhPvK/BMucG7/y0UHk+U7UrEbNMgG\nZQOp1OSWehy4SrfHGhM49dcc2gbNYeFtH+Y6BlBUDv1sB/YPnphgZR+S1BMICQjK\nx7QKSgPDqwKBgFyVq9zzSHiL/AQidb9DGZHniKvfhJTfWJjwCMMvRWgPyvXTc7+v\nLttLxVuYuL7EBKDTR2uVjjokVxdys2IEg8AQWPNLjxluakf6KzLPVsB2CZWlQkgb\npdxzLf9ovdFWiWWOLWTvjxceSVaeCSu+RggHynO7yoVfhzeEGj8ojt8HAoGAdMN7\nZ/+P6/sq3SEUqWJT5RJNYs3sGaDI2Q0ofM31kkaa0G4W9Jd5byC3PnmPKA9ZB6aR\novgTsurAnv1VqDxtSj3O+LYOiWZtNpTXeLkzgulgW+DrQjdOB82MWIWGx5hj0hrH\n+g1bhU2tO0ljiVHViX6iGQ/hdvmkLxqaP63LbtsCgYA/K/q2M0EZRHkOCDvEmH6I\nk+tayqCILSneJ12YoYrsgZL+2L6Jbi+s59QMr5uKvVf00+ArX81a7iYq0DC0eYoA\nwAZZtLpkUPYSW2FhV1XcViJSEj3/YxTJ+omjoG3XmLViHfjw5xJp7FfF3FinGzcP\nHWAd4srK0KHPgrwmfTZQPg==\n-----END PRIVATE KEY-----\n"
+			},
+			"databaseURL": "https://often-prod.firebaseio.com"
+		},
 		"BaseURL": "https://often-prod.firebaseio.com",
 		"Secret": "BM71BSNlBH3zRvzq5Kuku6Pw3WQzP4CgHa282JEY"
 	},

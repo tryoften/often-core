@@ -1,4 +1,3 @@
-import * as Firebase from 'firebase';
 import { firebase as FirebaseConfig } from '../config';
 import BaseModel from '../Models/BaseModel';
 import Subscription, { SubscriptionAttributes } from '../Models/Subscription';
@@ -40,7 +39,7 @@ class User extends BaseModel {
 
 	/* Getters */
 	get url(): Firebase {
-		return new Firebase(`${FirebaseConfig.BaseURL}/users/${this.id}`);
+		return this.getFirebaseReference(`/users/${this.id}`);
 	}
 
 	get packs() {
@@ -212,7 +211,6 @@ class User extends BaseModel {
 		}).then(() => {
 			this.setPack(pack);
 			pack.setTarget(this, `/users/${this.id}/packs/${pack.id}`);
-			pack.save();
 			this.save();
 			return pack;
 		});
