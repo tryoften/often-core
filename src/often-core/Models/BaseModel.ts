@@ -3,11 +3,8 @@ import * as _ from 'underscore';
 import { Firebase } from 'backbone';
 import ObjectMap from './ObjectMap';
 import BaseModelType from "./BaseModelType";
-import { firebase as FirebaseConfig } from '../config';
 
 const firebase = require('firebase');
-firebase.initializeApp(FirebaseConfig.credentials);
-console.log("Initialized Firebase in Base Model", FirebaseConfig.credentials.databaseURL);
 
 export interface BaseModelAttributes {
 	id?: string;

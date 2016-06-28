@@ -5,7 +5,7 @@ import { generate as generateId } from 'shortid';
 import BaseModelType from './BaseModelType';
 import { BaseModelAttributes } from './BaseModel';
 
-interface NotificationAttributes extends BaseModelAttributes {
+export interface NotificationAttributes extends BaseModelAttributes {
     id?: string;
     url?: string;
     creationDate?: Date;
@@ -13,7 +13,7 @@ interface NotificationAttributes extends BaseModelAttributes {
     targets?: [User];
 }
 
-interface FirebaseAttributes {
+export interface FirebaseAttributes {
     title: string;
     text: string;
     packId: string;
