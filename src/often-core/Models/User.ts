@@ -97,11 +97,11 @@ class User extends BaseModel {
 
 		return new Promise((resolve, reject) => {
 			if (!this.favoritesPackId) {
-				this.addPack(favoritesPackAttributes).then((addedPack) => {
+				this.addPack(favoritesPackAttributes).then((packId) => {
 					this.save({
-						favoritesPackId: addedPack.id
+						favoritesPackId: packId
 					});
-					resolve(addedPack.id);
+					resolve(packId);
 				});
 			} else {
 				resolve(this.favoritesPackId);
@@ -143,11 +143,11 @@ class User extends BaseModel {
 
 		return new Promise((resolve, reject) => {
 			if (!this.recentsPackId) {
-				this.addPack(recentsPackAttributes).then((addedPack) => {
+				this.addPack(recentsPackAttributes).then((packId) => {
 					this.save({
-						recentsPackId: addedPack.id
+						recentsPackId: packId
 					});
-					resolve(addedPack.id);
+					resolve(packId);
 				});
 			} else {
 				resolve(this.recentsPackId);
@@ -183,7 +183,7 @@ class User extends BaseModel {
 	 * @param packSubAttrs {SubscriptionAttributes} - Object containing pack subscription information
 	 * @returns {Promise<string>} - Returns a promise that resolves to a success message or to an error when rejected
 	 */
-	public addPack (packAttributes: PackAttributes, subscriptionAttributes: SubscriptionAttributes = {}): Promise<Pack> {
+	public addPack (packAttributes: PackAttributes, subscriptionAttributes: SubscriptionAttributes = {}): Promise<string> {
 
 		let attrs = Object.assign({}, subscriptionAttributes, {
 			userId: this.id,
@@ -208,9 +208,11 @@ class User extends BaseModel {
 			packSubscription.save();
 			return new Pack(packAttributes).syncData();
 		}).then( (pack: Pack) => {
-			this.setPack(pack.toIndexingFormat());
+			let indexablePack = pack.toIndexingFormat();
+			this.setPack(indexablePack);
 			pack.setTarget(this, `/users/${this.id}/packs/${pack.id}`);
 			this.save();
+			return indexablePack.id;
 		});
 	}
 
@@ -224,6 +226,7 @@ class User extends BaseModel {
 			pack.unsetTarget(this, `/users/${this.id}/packs/${pack.id}`);
 			this.unsetPack(packId);
 			this.save();
+			return packId;
 		});
 	}
 
