@@ -1,7 +1,10 @@
 import 'backbonefire';
+import * as _ from 'underscore';
 import { Firebase } from 'backbone';
 import ObjectMap from './ObjectMap';
 import BaseModelType from "./BaseModelType";
+
+const firebase = require('firebase');
 
 export interface BaseModelAttributes {
 	id?: string;
@@ -9,10 +12,16 @@ export interface BaseModelAttributes {
 	setObjectMap?: boolean;
 }
 
+export interface BaseModelOptions {
+	autoSync: boolean;
+	setObjectMap?: boolean;
+	rootRef?: any;
+}
+
 class BaseModel extends Firebase.Model {
 	objectMap: ObjectMap;
 
-	constructor (attributes?: BaseModelAttributes, options: any = {autoSync: false, setObjectMap: false}) {
+	constructor (attributes?: BaseModelAttributes, options: BaseModelOptions = {autoSync: false, setObjectMap: false}) {
 		super(attributes, options);
 
 		if (options.setObjectMap) {
@@ -25,10 +34,14 @@ class BaseModel extends Firebase.Model {
 				throw new Error('ItemId must be defined in base model attributes');
 			}
 
+			options = _.defaults(options, {
+				rootRef: this.getFirebaseInstance()
+			});
+
 			this.objectMap = new ObjectMap({
 				id: attributes.id,
 				type: attributes.type
-			});
+			}, options);
 		}
 	}
 
@@ -40,6 +53,13 @@ class BaseModel extends Firebase.Model {
 		return this.get('deleted') || false;
 	}
 
+	public getFirebaseReference(endpoint?: string) {
+		return firebase.database().ref(endpoint);
+	}
+
+	public getFirebaseInstance() {
+		return firebase.database();
+	}
 	public getTargetObjectProperties(): any {
 		throw new Error('Not implemented. Must be overridden in derived class');
 	}
@@ -63,9 +83,11 @@ class BaseModel extends Firebase.Model {
 		});
 	}
 
-	public syncData(): Promise<any> {
+	public syncData(): Promise<Firebase.Model> {
 		if (this.objectMap) {
-			return Promise.all([ this.syncModel(), this.objectMap.syncModel()]);
+			return Promise.all([ this.syncModel(), this.objectMap.syncModel()]).then(() => {
+				return this;
+			});
 		}
 		return this.syncModel();
 	}

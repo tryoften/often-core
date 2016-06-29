@@ -1,5 +1,7 @@
 import Subscription from '../Models/Subscription';
-import { firebase as FirebaseConfig } from '../config';
+import * as Backbone from 'backbone';
+
+const firebase = require('firebase');
 
 export default class Subscriptions extends Backbone.Firebase.Collection<Subscription> {
 	constructor() {
@@ -9,7 +11,7 @@ export default class Subscriptions extends Backbone.Firebase.Collection<Subscrip
 		});
 	}
 
-	get url(): Firebase {
-		return new Firebase(`${FirebaseConfig.BaseURL}/subscriptions`);
+	get url() {
+		return firebase.database().ref(`/subscriptions`);
 	}
 }

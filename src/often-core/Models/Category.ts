@@ -43,8 +43,8 @@ class Category extends BaseModel {
 		};
 	}
 
-	get url(): string {
-		return `${FirebaseConfig.BaseURL}/categories/${this.id}`;
+	get url(): Firebase {
+		return this.getFirebaseReference(`/categories/${this.id}`);
 	}
 
 	get name(): string {

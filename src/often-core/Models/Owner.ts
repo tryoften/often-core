@@ -56,6 +56,6 @@ export default class Owner extends MediaItem {
 	}
 
 	get url(): Firebase {
-		return new Firebase(`${FirebaseConfig.BaseURL}/owners/${this.id}`);
+		return this.getFirebaseReference(`/owners/${this.id}`);
 	}
 }

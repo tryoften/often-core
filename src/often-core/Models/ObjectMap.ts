@@ -1,10 +1,12 @@
-import { firebase as FirebaseConfig } from '../config';
-import * as Firebase from 'firebase';
 import 'backbonefire';
+import * as _ from 'underscore';
+import * as ObjectHash from 'object-hash';
 import { Firebase as BackboneFire } from 'backbone';
+import { firebase as FirebaseConfig } from '../config';
 import BaseModelType from "./BaseModelType";
 import BaseModel from "./BaseModel";
-import * as ObjectHash from 'object-hash';
+
+const Firebase = require('firebase');
 
 export interface ObjectMapAttributes {
 	type: BaseModelType;
@@ -12,11 +14,18 @@ export interface ObjectMapAttributes {
 	deepSync?: boolean;
 }
 
+export interface ObjectMapOptions {
+	autoSync: boolean;
+	deepSync?: boolean;
+	rootRef?: Firebase;
+}
+
 class ObjectMap extends BackboneFire.Model {
+	protected rootURL: Firebase;
 	protected rootRef: Firebase;
 	protected deepSync: boolean;
 
-	constructor(attributes: ObjectMapAttributes, options: any = {autoSync: false, deepSync: false}) {
+	constructor(attributes: ObjectMapAttributes, options: ObjectMapOptions = { autoSync: false, deepSync: false }) {
 		if (!attributes.type) {
 			throw new Error('Type must be defined in object map attributes.');
 		}
@@ -25,10 +34,23 @@ class ObjectMap extends BackboneFire.Model {
 			throw new Error('ItemId must be defined in object map attributes');
 		}
 
-		super(attributes, options);
+		options = _.defaults(options, {
+			autoSync: false,
+			deepSync: false,
+			rootRef: Firebase.database()
+		});
 
-		this.rootRef = new Firebase(FirebaseConfig.BaseURL);
-		this.deepSync = options.deepSync;
+		super(attributes, options);
+	}
+
+	initialize (attributes, options) {
+			this.rootURL = options.rootRef.ref(`/object_map/${attributes.type}/${attributes.id}`);
+			this.rootRef = options.rootRef;
+			this.deepSync = options.deepSync;
+	}
+
+	get url(): Firebase {
+		return this.rootURL;
 	}
 
 	get type(): string {
@@ -46,10 +68,6 @@ class ObjectMap extends BackboneFire.Model {
 				}
 			});
 		});
-	}
-
-	get url(): Firebase {
-		return new Firebase(`${FirebaseConfig.BaseURL}/object_map/${this.get('type')}/${this.id}`);
 	}
 
 	get targets() {

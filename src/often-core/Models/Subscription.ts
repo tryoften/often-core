@@ -45,7 +45,6 @@ class Subscription extends BaseModel implements Indexable {
 		attributes.timeLastUpdated = new Date().toISOString();
 
 		super(attributes, options);
-		this.save();
 	}
 
 	defaults(): Backbone.ObjectHash {
@@ -85,7 +84,7 @@ class Subscription extends BaseModel implements Indexable {
 	}
 
 	get url(): Firebase {
-		return new Firebase(`${FirebaseConfig.BaseURL}/subscriptions/${this.mediaItemType}/${this.itemId}/${this.userId}/${this.id}`);
+		return this.getFirebaseReference(`/subscriptions/${this.mediaItemType}/${this.itemId}/${this.userId}/${this.id}`);
 	}
 
 	/**
@@ -93,7 +92,7 @@ class Subscription extends BaseModel implements Indexable {
 	 * @param {SubscriptionAttributes} subAttrs - Object containing subscription information
 	 */
 	subscribe (subAttrs?: SubscriptionAttributes) {
-		this.save({
+		this.set({
 			timeSubscribed: (subAttrs) ? subAttrs.timeSubscribed || new Date().toISOString() : new Date().toISOString(),
 			subscriptionType: (subAttrs) ? subAttrs.subscriptionType || SubscriptionType.free : SubscriptionType.free,
 			timeLastUpdated: new Date().toISOString()
@@ -104,7 +103,7 @@ class Subscription extends BaseModel implements Indexable {
 	 * Udates the time at which the subscription information has been restored by the user.
 	 */
 	updateTimeLastRestored() {
-		this.save({
+		this.set({
 			timeLastRestored: new Date().toISOString(),
 			timeLastUpdated: new Date().toISOString()
 		});

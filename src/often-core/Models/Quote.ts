@@ -27,7 +27,7 @@ export default class Quote extends MediaItem {
 	}
 
 	get url(): Firebase {
-		return new Firebase(`${FirebaseConfig.BaseURL}/owners/${this.get('owner_id')}/quotes/${this.id}`);
+		return this.getFirebaseReference(`/owners/${this.get('owner_id')}/quotes/${this.id}`);
 	}
 
 	get text(): string {

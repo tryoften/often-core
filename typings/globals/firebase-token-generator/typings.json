@@ -1,0 +1,8 @@
+{
+  "resolution": "main",
+  "tree": {
+    "src": "https://raw.githubusercontent.com/DefinitelyTyped/DefinitelyTyped/edb64e4a35896510ce02b93c0bca5ec3878db738/firebase-token-generator/firebase-token-generator.d.ts",
+    "raw": "github:DefinitelyTyped/DefinitelyTyped/firebase-token-generator/firebase-token-generator.d.ts#edb64e4a35896510ce02b93c0bca5ec3878db738",
+    "typings": "https://raw.githubusercontent.com/DefinitelyTyped/DefinitelyTyped/edb64e4a35896510ce02b93c0bca5ec3878db738/firebase-token-generator/firebase-token-generator.d.ts"
+  }
+}
