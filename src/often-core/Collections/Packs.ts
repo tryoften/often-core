@@ -11,4 +11,20 @@ export default class Packs extends Backbone.Firebase.Collection<Pack> {
 	get url(): Firebase {
 		return new Firebase(`${FirebaseConfig.BaseURL}/packs`);
 	}
+
+	generateBrowseSections(sections: [SectionAttributes]) {
+		for (var section of sections) {
+			var sectionPacks = this
+				.filter(p => p.section.name = section.name)
+				.map(p => p.toIndexingFormat());
+			sections.push({
+				id: section.id,
+				name: section.name,
+				items: sectionPacks,
+				type: 'section'
+			});
+		}
+
+		return sections;
+	}
 }

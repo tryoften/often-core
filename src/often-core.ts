@@ -14,6 +14,7 @@ export { default as ObjectMap } from './often-core/Models/ObjectMap';
 export { default as Owner } from './often-core/Models/Owner';
 export { default as Pack } from './often-core/Models/Pack';
 export { default as Quote } from './often-core/Models/Quote';
+export { default as Section } from './often-core/Models/Section';
 export { default as ShortenedURL } from './often-core/Models/ShortenedURL';
 export { default as Subscription } from './often-core/Models/Subscription';
 
