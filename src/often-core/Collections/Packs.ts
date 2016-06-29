@@ -1,5 +1,7 @@
-import Pack from '../Models/Pack';
 import * as Backbone from 'backbone';
+import Pack from '../Models/Pack';
+import MediaItemGroup from '../Models/MediaItemGroup';
+import { SectionAttributes } from '../Models/Section';
 
 const firebase = require('firebase');
 
@@ -12,12 +14,15 @@ export default class Packs extends Backbone.Firebase.Collection<Pack> {
 		return firebase.database().ref(`/packs`);
 	}
 
-	generateBrowseSections(sections: [SectionAttributes]) {
+	generateBrowseSections(sections: [SectionAttributes]): MediaItemGroup[] {
+		var mediaItemGroups: MediaItemGroup[] = [];
+
 		for (var section of sections) {
 			var sectionPacks = this
-				.filter(p => p.section.name = section.name)
+				.filter(p => p.section.name == section.name)
 				.map(p => p.toIndexingFormat());
-			sections.push({
+
+			mediaItemGroups.push({
 				id: section.id,
 				name: section.name,
 				items: sectionPacks,
@@ -25,6 +30,6 @@ export default class Packs extends Backbone.Firebase.Collection<Pack> {
 			});
 		}
 
-		return sections;
+		return mediaItemGroups;
 	}
 }

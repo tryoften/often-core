@@ -8,26 +8,19 @@ import MediaItemSource from "./MediaItemSource";
 import Category, {CategoryAttributes} from './Category';
 import {IndexableObject} from '../Interfaces/Indexable';
 import Featured from './Featured';
-
-export type UserId = string;
-export type PackMeta = Object;
+import { SectionAttributes } from '../Models/Section';
 
 export interface IndexablePackItem extends IndexableObject {
 	id?: string;
 	category?: CategoryAttributes;
-};
+}
 
 export interface PackAttributes extends MediaItemAttributes {
 	id?: string;
 	name?: string;
-	imageId?: string;
 	image?: {
-		square_small_url?: string,
-		square_url?: string,
-		small_url?: string,
-		medium_url?: string,
-		original_url?: string,
-		large_url?: string
+		small_url?: string;
+		large_url?: string;
 	};
 	price?: number;
 	premium?: boolean;
@@ -41,13 +34,7 @@ export interface PackAttributes extends MediaItemAttributes {
 	isFavorites?: boolean;
 	isRecents?: boolean;
 	shareCount?: number;
-};
-
-export interface PackOptions {
-	autoSync?: boolean;
-	setObjectMap?: boolean;
-	deepSync?: boolean;
-	rootRef?: Firebase;
+	section?: SectionAttributes;
 }
 
 export interface PackIndexableObject extends PackAttributes {}
@@ -57,41 +44,30 @@ export interface MediaItemInfo {
 	id: string;
 }
 
+export type UserId = string;
+export type PackMeta = Object;
+
 class Pack extends MediaItem {
 
-	rootURL: Firebase;
 	/**
 	 * Designated constructor
 	 *
 	 * @param attributes {PackAttributes}
 	 * @param options
 	 */
-	constructor(attributes: PackAttributes = {}, options: PackOptions = {}) {
+	constructor(attributes: PackAttributes = {}, options: any = {autoSync: false, setObjectMap: true}) {
 		attributes = _.defaults(attributes, {
 			type: MediaItemType.pack,
 			source: MediaItemSource.Often
-		});
-
-		options = _.defaults(options, {
-			autoSync: false,
-			setObjectMap: true,
-			deepSync: false
 		});
 
 		if (!attributes.items) {
 			attributes.items = [];
 		}
 		attributes.type = MediaItemType.pack;
+
 		super(attributes, options);
-	}
 
-	initialize (attributes: PackAttributes, options: PackOptions) {
-		let rootRef =  options.rootRef || this.getFirebaseInstance();
-		this.rootURL = rootRef.ref(`/packs/${attributes.id}`);
-	}
-
-	get url(): Firebase {
-		return this.rootURL;
 	}
 
 	defaults(): Backbone.ObjectHash {
@@ -113,6 +89,10 @@ class Pack extends MediaItem {
 			isFavorites: false,
 			isRecents: false
 		};
+	}
+
+	get url(): Firebase {
+		return new Firebase(`${FirebaseConfig.BaseURL}/packs/${this.id}`);
 	}
 
 	get name(): string {
@@ -167,13 +147,17 @@ class Pack extends MediaItem {
 		return this.get('isRecents');
 	}
 
+	get section(): SectionAttributes {
+		return this.get('section');
+	}
+
 	getTargetObjectProperties(): any {
 		return {
 			id: this.id,
 			name: this.name,
 			image: this.image,
 			categories: this.categories,
-			description: this.description,
+			desscription: this.description,
 			items: this.items,
 			premium: this.premium,
 			featured: this.featured,
@@ -210,24 +194,6 @@ class Pack extends MediaItem {
 		featuredPacks.syncData().then( (fp) => {
 			this.featured ? featuredPacks.addFeaturedItem(this) : featuredPacks.removeFeaturedItem(this.id);
 		});
-	}
-
-	setItemPosition(itemId: string, newIndex: number) {
-
-		let items = this.items;
-		if (newIndex < 0 || newIndex >= items.length) {
-			return false;
-		}
-		let oldIndex = _.findIndex(items, (itm) => itm.id === itemId);
-
-		let item = items[oldIndex];
-		items.splice(oldIndex, 1);
-		items.splice(newIndex, 0, item);
-
-		this.save({
-			items: items
-		});
-
 	}
 
 	assignCategoryToItem (itemId: string, category: Category) {
@@ -306,7 +272,6 @@ class Pack extends MediaItem {
 	 * Overwrite for base class's toIndexingFormat method
 	 *
 	 * @returns {IndexableObject}
-	 *
 	 */
 	public toIndexingFormat(): IndexableObject {
 		let data = _.extend({

@@ -13,10 +13,10 @@ export interface CommonIndexedFields {
 }
 
 export interface IndexableObject extends CommonIndexedFields {
-	_id: string;
-	_type: MediaItemType;
-	_index: string;
-	_score: number;
+	_id?: string;
+	_type?: MediaItemType;
+	_index?: string;
+	_score?: number;
 	id?: string;
 	type?: MediaItemType;
 	index?: string;

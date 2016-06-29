@@ -1,7 +1,7 @@
 import { generate as generateId } from 'shortid';
 import BaseModelType from './BaseModelType';
 import BaseModel from './BaseModel';
-import {BaseModelAttributes} from '@often/often-core/dist/often-core/Models/BaseModel';
+import { BaseModelAttributes } from '../Models/BaseModel';
 
 export interface SectionAttributes {
     id?: string;
