@@ -5,16 +5,18 @@ export default class BaseModelType extends String {
 	static category: BaseModelType = 'category';
 	static subscription: BaseModelType = 'subscription';
 	static user: BaseModelType = 'user';
-	static section: BaseModelType = 'section';
-	static image: BaseModelType = 'image';
 	static notification: BaseModelType = 'notification';
+	static image: BaseModelType = 'image';
+	static section: BaseModelType = 'section';
 
 	static allTypes: BaseModelType[] = _.union(
 		MediaItemType.allTypes,
 		BaseModelType.category,
 		BaseModelType.subscription,
+		BaseModelType.user,
+		BaseModelType.notification,
 		BaseModelType.image,
-		BaseModelType.user
+		BaseModelType.section
 	);
 
 	private static mapping: any;
@@ -24,9 +26,9 @@ export default class BaseModelType extends String {
 				category: require('./Category').default,
 				subscription: require('./Subscription').default,
 				user: require('./User').default,
-				section: require('./Section').default,
+				notification: require('./Notification').default,
 				image: require('./Image').default,
-				notification: require('./Notification').default
+				section: require('./Section').default
 			});
 		}
 		return BaseModelType.mapping;

@@ -92,7 +92,7 @@ class Pack extends MediaItem {
 	}
 
 	get url(): Firebase {
-		return new Firebase(`${FirebaseConfig.BaseURL}/packs/${this.id}`);
+		return this.getFirebaseReference(`/packs/${this.id}`);
 	}
 
 	get name(): string {
