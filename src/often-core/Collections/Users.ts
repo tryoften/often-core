@@ -1,12 +1,12 @@
 import 'backbonefire';
 import * as Backbone from 'backbone';
-import { firebase as FirebaseConfig } from '../config';
-import * as Firebase from 'firebase';
 import User from '../Models/User';
 import logger from '../logger';
 
+const firebase = require('firebase');
+
 export default class Users extends Backbone.Firebase.Collection<User> {
-	get url(): Firebase {
-		return new Firebase(`${FirebaseConfig.BaseURL}/users`);
+	get url() {
+		return firebase.database().ref(`/users`);
 	}
 }

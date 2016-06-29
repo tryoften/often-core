@@ -1,6 +1,7 @@
 import { Firebase } from 'backbone';
 import Category from '../Models/Category';
-import { firebase as FirebaseConfig } from '../config';
+
+const firebase = require('firebase');
 
 class Categories extends Firebase.Collection<Category> {
 	constructor () {
@@ -10,9 +11,10 @@ class Categories extends Firebase.Collection<Category> {
 		});
 	}
 
-	initialize (models: Category[], opts: any) {
-		this.url = `${FirebaseConfig.BaseURL}/categories`;
+	get url() {
+		return firebase.database().ref(`/categories`);
 	}
+
 }
 
 export default Categories;

@@ -1,6 +1,7 @@
 import { Firebase } from 'backbone';
 import Image from '../Models/Image';
-import { firebase as FirebaseConfig } from '../config';
+
+const firebase = require('firebase');
 
 class Images extends Firebase.Collection<Image> {
 	constructor (models = [], opts = { model: Image, autoSync: false}) {
@@ -8,7 +9,7 @@ class Images extends Firebase.Collection<Image> {
 	}
 
 	get url() {
-		return `${FirebaseConfig.BaseURL}/images`;
+		return firebase.database().ref(`/images`);
 	}
 }
 
