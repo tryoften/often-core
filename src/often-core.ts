@@ -1,3 +1,6 @@
+// Load DB
+let db = require('./often-core/db');
+
 // Models
 export { default as BaseModel } from './often-core/Models/BaseModel';
 export { default as Artist, ArtistIndexableObject } from './often-core/Models/Artist';
