@@ -5,22 +5,30 @@ import * as Firebase from 'firebase';
 import { MediaItemAttributes } from './MediaItem';
 import * as _ from 'underscore';
 import MediaItemSource from "./MediaItemSource";
-import Category, {CategoryAttributes} from './Category';
-import {IndexableObject} from '../Interfaces/Indexable';
-import Featured from './Featured';
+import Category, { CategoryAttributes } from './Category';
+import { IndexableObject } from '../Interfaces/Indexable';
 import { SectionAttributes } from '../Models/Section';
+import Featured from './Featured';
+
+export type UserId = string;
+export type PackMeta = Object;
 
 export interface IndexablePackItem extends IndexableObject {
 	id?: string;
 	category?: CategoryAttributes;
-}
+};
 
 export interface PackAttributes extends MediaItemAttributes {
 	id?: string;
 	name?: string;
+	imageId?: string;
 	image?: {
-		small_url?: string;
-		large_url?: string;
+		square_small_url?: string,
+		square_url?: string,
+		small_url?: string,
+		medium_url?: string,
+		original_url?: string,
+		large_url?: string
 	};
 	price?: number;
 	premium?: boolean;
@@ -35,6 +43,13 @@ export interface PackAttributes extends MediaItemAttributes {
 	isRecents?: boolean;
 	shareCount?: number;
 	section?: SectionAttributes;
+};
+
+export interface PackOptions {
+	autoSync?: boolean;
+	setObjectMap?: boolean;
+	deepSync?: boolean;
+	rootRef?: Firebase;
 }
 
 export interface PackIndexableObject extends PackAttributes {}
@@ -44,30 +59,41 @@ export interface MediaItemInfo {
 	id: string;
 }
 
-export type UserId = string;
-export type PackMeta = Object;
-
 class Pack extends MediaItem {
 
+	rootURL: Firebase;
 	/**
 	 * Designated constructor
 	 *
 	 * @param attributes {PackAttributes}
 	 * @param options
 	 */
-	constructor(attributes: PackAttributes = {}, options: any = {autoSync: false, setObjectMap: true}) {
+	constructor(attributes: PackAttributes = {}, options: PackOptions = {}) {
 		attributes = _.defaults(attributes, {
 			type: MediaItemType.pack,
 			source: MediaItemSource.Often
+		});
+
+		options = _.defaults(options, {
+			autoSync: false,
+			setObjectMap: true,
+			deepSync: false
 		});
 
 		if (!attributes.items) {
 			attributes.items = [];
 		}
 		attributes.type = MediaItemType.pack;
-
 		super(attributes, options);
+	}
 
+	initialize (attributes: PackAttributes, options: PackOptions) {
+		let rootRef =  options.rootRef || this.getFirebaseInstance();
+		this.rootURL = rootRef.ref(`/packs/${attributes.id}`);
+	}
+
+	get url(): Firebase {
+		return this.rootURL;
 	}
 
 	defaults(): Backbone.ObjectHash {
@@ -89,10 +115,6 @@ class Pack extends MediaItem {
 			isFavorites: false,
 			isRecents: false
 		};
-	}
-
-	get url(): Firebase {
-		return this.getFirebaseReference(`/packs/${this.id}`);
 	}
 
 	get name(): string {
@@ -157,7 +179,7 @@ class Pack extends MediaItem {
 			name: this.name,
 			image: this.image,
 			categories: this.categories,
-			desscription: this.description,
+			description: this.description,
 			items: this.items,
 			premium: this.premium,
 			featured: this.featured,
@@ -172,7 +194,7 @@ class Pack extends MediaItem {
 	/**
 	 * Adds an individual media item to the pack
 	 * @param item
-     */
+	 */
 	addItem (item: MediaItem) {
 		var itemObj = item.toJSON();
 
@@ -194,6 +216,24 @@ class Pack extends MediaItem {
 		featuredPacks.syncData().then( (fp) => {
 			this.featured ? featuredPacks.addFeaturedItem(this) : featuredPacks.removeFeaturedItem(this.id);
 		});
+	}
+
+	setItemPosition(itemId: string, newIndex: number) {
+
+		let items = this.items;
+		if (newIndex < 0 || newIndex >= items.length) {
+			return false;
+		}
+		let oldIndex = _.findIndex(items, (itm) => itm.id === itemId);
+
+		let item = items[oldIndex];
+		items.splice(oldIndex, 1);
+		items.splice(newIndex, 0, item);
+
+		this.save({
+			items: items
+		});
+
 	}
 
 	assignCategoryToItem (itemId: string, category: Category) {
@@ -272,6 +312,7 @@ class Pack extends MediaItem {
 	 * Overwrite for base class's toIndexingFormat method
 	 *
 	 * @returns {IndexableObject}
+	 *
 	 */
 	public toIndexingFormat(): IndexableObject {
 		let data = _.extend({
