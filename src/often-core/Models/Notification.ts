@@ -29,7 +29,7 @@ class Notification extends BaseModel {
     }
 
     get url(): string {
-        return `${FirebaseConfig.BaseURL}/notifications/${this.id}`;
+        return this.getFirebaseReference(`/notifications/${this.id}`);
     }
 
     get title(): string {
