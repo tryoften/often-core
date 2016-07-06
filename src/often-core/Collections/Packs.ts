@@ -19,7 +19,7 @@ export default class Packs extends Backbone.Firebase.Collection<Pack> {
 
 		for (var section of sections) {
 			var sectionPacks = this
-				.filter(p => p.section.name == section.name)
+				.filter(p => p.section !== undefined && p.section.name == section.name)
 				.map(p => p.toIndexingFormat());
 
 			mediaItemGroups.push({
