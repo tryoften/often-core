@@ -25,6 +25,10 @@ class Section extends BaseModel {
     get name(): string {
         return this.get('name');
     }
+
+    get url(): Firebase {
+        return this.getFirebaseReference(`/sections/${this.id}`);
+    }
 }
 
 export default Section;
