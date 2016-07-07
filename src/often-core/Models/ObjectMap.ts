@@ -129,7 +129,7 @@ class ObjectMap extends BackboneFire.Model {
 				}
 			}
 
-			this.rootRef.update(updateObject, (error) => {
+			this.rootRef.ref().update(updateObject, (error) => {
 				if (error) {
 					reject(error);
 					return;
