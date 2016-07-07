@@ -43,6 +43,7 @@ export interface PackAttributes extends MediaItemAttributes {
 	isRecents?: boolean;
 	shareCount?: number;
 	section?: SectionAttributes;
+	backgroundColor?: string;
 };
 
 export interface PackOptions {
@@ -171,6 +172,10 @@ class Pack extends MediaItem {
 
 	get section(): SectionAttributes {
 		return this.get('section');
+	}
+
+	get backgroundColor(): string {
+		return this.get('backgroundColor');
 	}
 
 	getTargetObjectProperties(): any {
