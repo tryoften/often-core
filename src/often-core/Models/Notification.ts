@@ -13,6 +13,13 @@ export interface NotificationAttributes extends BaseModelAttributes {
     targets?: [User];
 }
 
+export interface NotificationOptions {
+    autoSync: boolean;
+    setObjectMap?: boolean;
+    deepSync?: boolean;
+    rootRef?: Firebase;
+}
+
 export interface FirebaseAttributes {
     title: string;
     text: string;
@@ -20,7 +27,8 @@ export interface FirebaseAttributes {
 }
 
 class Notification extends BaseModel {
-    constructor(attributes: NotificationAttributes = {}, opts: any = {autoSync: false, deepSync: false, setObjectMap: false}) {
+    rootURL: Firebase;
+    constructor(attributes: NotificationAttributes = {}, opts: NotificationOptions = {autoSync: false, deepSync: false, setObjectMap: false}) {
         if (!attributes.id) {
             attributes.id = generateId();
         }
@@ -28,8 +36,13 @@ class Notification extends BaseModel {
         super(attributes, opts);
     }
 
-    get url(): string {
-        return this.getFirebaseReference(`/notifications/${this.id}`);
+    initialize (attributes: NotificationAttributes, options: NotificationOptions) {
+        let rootRef =  options.rootRef || this.getFirebaseInstance();
+        this.rootURL = rootRef.ref(`/notifications/${this.id}`);
+    }
+
+    get url(): Firebase {
+        return this.rootURL;
     }
 
     get title(): string {
