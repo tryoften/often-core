@@ -2,7 +2,7 @@ import { firebase as FirebaseConfig } from '../config';
 import MediaItemType from './MediaItemType';
 import MediaItem from './MediaItem';
 import * as Firebase from 'firebase';
-import { MediaItemAttributes } from './MediaItem';
+import { MediaItemAttributes, MediaItemOptions } from './MediaItem';
 import * as _ from 'underscore';
 import MediaItemSource from "./MediaItemSource";
 import Category, { CategoryAttributes } from './Category';
@@ -46,8 +46,7 @@ export interface PackAttributes extends MediaItemAttributes {
 	followersCount?: number;
 };
 
-export interface PackOptions {
-	autoSync?: boolean;
+export interface PackOptions extends MediaItemOptions {
 	setObjectMap?: boolean;
 	deepSync?: boolean;
 	rootRef?: Firebase;
@@ -69,7 +68,7 @@ class Pack extends MediaItem {
 	 * @param attributes {PackAttributes}
 	 * @param options
 	 */
-	constructor(attributes: PackAttributes = {}, options: PackOptions = {}) {
+	constructor(attributes: PackAttributes = {}, options: PackOptions = {autoSync: false}) {
 		attributes = _.defaults(attributes, {
 			type: MediaItemType.pack,
 			source: MediaItemSource.Often
@@ -78,7 +77,8 @@ class Pack extends MediaItem {
 		options = _.defaults(options, {
 			autoSync: false,
 			setObjectMap: true,
-			deepSync: false
+			deepSync: false,
+			generateId: true
 		});
 
 		if (!attributes.items) {

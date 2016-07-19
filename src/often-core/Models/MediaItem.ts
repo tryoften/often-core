@@ -3,6 +3,7 @@ import MediaItemType from './MediaItemType';
 import MediaItemSource from './MediaItemSource';
 import { generate as generateId } from 'shortid';
 import { Indexable, IndexableObject } from '../Interfaces/Indexable';
+import { BaseModelOptions } from './BaseModel';
 import IDSpace from './IDSpace';
 import * as _ from 'underscore';
 
@@ -12,6 +13,10 @@ export interface MediaItemAttributes {
 	type?: MediaItemType;
 	score?: number;
 	setObjectMap?: boolean;
+}
+
+export interface MediaItemOptions extends BaseModelOptions {
+	generateId?: boolean;
 }
 
 /**
@@ -25,8 +30,8 @@ export class MediaItem extends BaseModel implements Indexable {
 	 * @param attributes
 	 * @param options
      */
-	constructor(attributes: MediaItemAttributes = {}, options?: any) {
-		if (!attributes.id) {
+	constructor(attributes: MediaItemAttributes = {}, options: MediaItemOptions = {generateId: true, autoSync: false}) {
+		if (!attributes.id && options.generateId) {
 			attributes.id = generateId();
 		}
 
@@ -35,7 +40,6 @@ export class MediaItem extends BaseModel implements Indexable {
 		}
 
 		super(attributes, options);
-
 	}
 
 	/**
