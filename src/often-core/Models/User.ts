@@ -83,7 +83,6 @@ class User extends BaseModel {
 			type: MediaItemType.pack,
 			source: MediaItemSource.Often,
 			setObjectMap: true,
-			shareCount: 0,
 			premium: false,
 			price: 0.0,
 			image: {
@@ -106,6 +105,12 @@ class User extends BaseModel {
 			} else {
 				resolve(this.favoritesPackId);
 			}
+		});
+	}
+
+	incrementShareCount() {
+		this.set({
+			shareCount: this.shareCount + 1
 		});
 	}
 
@@ -212,6 +217,7 @@ class User extends BaseModel {
 			let indexablePack = pack.toIndexingFormat();
 			this.setPack(indexablePack);
 			pack.setTarget(this, `/users/${this.id}/packs/${pack.id}`);
+			pack.addFollower();
 			this.save();
 			return indexablePack.id;
 		});
@@ -225,6 +231,7 @@ class User extends BaseModel {
 	public removePack (packId: string): Promise<string> {
 		return new Pack({id: packId}).syncData().then( (pack: Pack) => {
 			pack.unsetTarget(this, `/users/${this.id}/packs/${pack.id}`);
+			pack.removeFollower();
 			this.unsetPack(packId);
 			this.save();
 			return packId;

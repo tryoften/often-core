@@ -41,9 +41,9 @@ export interface PackAttributes extends MediaItemAttributes {
 	items_count?: number;
 	isFavorites?: boolean;
 	isRecents?: boolean;
-	shareCount?: number;
 	section?: SectionAttributes;
 	backgroundColor?: string;
+	followersCount?: number;
 };
 
 export interface PackOptions {
@@ -114,7 +114,8 @@ class Pack extends MediaItem {
 			},
 			items: [],
 			isFavorites: false,
-			isRecents: false
+			isRecents: false,
+			followersCount: 0
 		};
 	}
 
@@ -178,6 +179,10 @@ class Pack extends MediaItem {
 		return this.get('backgroundColor');
 	}
 
+	get followersCount(): number {
+		return this.get('followersCount') || 0;
+	}
+
 	getTargetObjectProperties(): any {
 		return {
 			id: this.id,
@@ -194,6 +199,20 @@ class Pack extends MediaItem {
 			isFavorites: this.isFavorites,
 			isRecents: this.isRecents
 		};
+	}
+
+	addFollower() {
+		this.save({
+			followersCount: this.followersCount + 1
+		});
+	}
+
+	removeFollower() {
+		if (this.followersCount > 0) {
+			this.save({
+				followersCount: this.followersCount - 1
+			});
+		}
 	}
 
 	/**
