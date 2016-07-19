@@ -1,6 +1,6 @@
 import 'backbonefire';
 import * as _ from 'underscore';
-import { Firebase } from 'backbone';
+import { Firebase, ModelSaveOptions } from 'backbone';
 import ObjectMap from './ObjectMap';
 import BaseModelType from "./BaseModelType";
 
@@ -92,20 +92,20 @@ class BaseModel extends Firebase.Model {
 		return this.syncModel();
 	}
 
-	public setTarget (model: BaseModel, targetPath: string) {
+	public setTarget(model: BaseModel, targetPath: string) {
 		if (this.objectMap) {
 			this.objectMap.setTarget(model, targetPath);
 		}
 	}
 
-	public unsetTarget (model: BaseModel, targetPath: string) {
+	public unsetTarget(model: BaseModel, targetPath: string) {
 		if (this.objectMap) {
 			this.objectMap.unsetTarget(model, targetPath);
 		}
 	}
 
-	public save (obj?: any) {
-		(obj) ? super.save(obj) : super.save();
+	public save(attributes?: any, options?: ModelSaveOptions) {
+		super.save(attributes, options);
 		this.updateTargetsWithProperties();
 	}
 

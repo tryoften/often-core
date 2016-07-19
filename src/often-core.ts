@@ -5,7 +5,7 @@ var main = firebase.initializeApp(FirebaseConfig.credentials);
 console.log("Initialized Firebase (main)", FirebaseConfig.credentials);
 
 // Models
-export { default as BaseModel } from './often-core/Models/BaseModel';
+export { default as BaseModel, BaseModelAttributes, BaseModelOptions } from './often-core/Models/BaseModel';
 export { default as Artist, ArtistIndexableObject } from './often-core/Models/Artist';
 export { default as Category, CategoryAttributes } from './often-core/Models/Category';
 export { default as Featured } from './often-core/Models/Featured';
@@ -14,12 +14,12 @@ export { default as Track, TrackIndexableObject } from './often-core/Models/Trac
 export { default as User, UserAttributes } from './often-core/Models/User';
 export { default as IDSpace } from './often-core/Models/IDSpace';
 export { default as Lyric } from './often-core/Models/Lyric';
-export { default as MediaItem, MediaItemAttributes } from './often-core/Models/MediaItem';
+export { default as MediaItem, MediaItemAttributes, MediaItemOptions } from './often-core/Models/MediaItem';
 export { default as MediaItemType } from './often-core/Models/MediaItemType';
 export { default as MediaItemSource } from './often-core/Models/MediaItemSource';
 export { default as ObjectMap } from './often-core/Models/ObjectMap';
 export { default as Owner, OwnerAttributes } from './often-core/Models/Owner';
-export { default as Pack, PackAttributes, IndexablePackItem } from './often-core/Models/Pack';
+export { default as Pack, PackAttributes, IndexablePackItem, PackOptions } from './often-core/Models/Pack';
 export { default as Quote, QuoteAttributes } from './often-core/Models/Quote';
 export { default as ShortenedURL } from './often-core/Models/ShortenedURL';
 export { default as Subscription, SubscriptionAttributes } from './often-core/Models/Subscription';
