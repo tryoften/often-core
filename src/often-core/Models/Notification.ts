@@ -3,7 +3,7 @@ import User from './User';
 import { firebase as FirebaseConfig } from '../config';
 import { generate as generateId } from 'shortid';
 import BaseModelType from './BaseModelType';
-import { BaseModelAttributes } from './BaseModel';
+import { BaseModelAttributes, BaseModelOptions } from './BaseModel';
 
 export interface NotificationAttributes extends BaseModelAttributes {
     id?: string;
@@ -13,7 +13,7 @@ export interface NotificationAttributes extends BaseModelAttributes {
     targets?: [User];
 }
 
-export interface NotificationOptions {
+export interface NotificationOptions extends BaseModelOptions {
     autoSync: boolean;
     setObjectMap?: boolean;
     deepSync?: boolean;
