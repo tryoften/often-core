@@ -10,7 +10,7 @@ export interface NotificationAttributes extends BaseModelAttributes {
     url?: string;
     creationDate?: Date;
     releaseDate?: Date;
-    targets?: [User];
+    target?: String;
 }
 
 export interface NotificationOptions extends BaseModelOptions {
@@ -57,8 +57,8 @@ class Notification extends BaseModel {
         return this.get('releaseDate') || '';
     }
 
-    get targets(): User[] {
-        return this.get('targets') || [];
+    get target(): string {
+        return this.get('target') || '';
     }
 
     get text(): string {
