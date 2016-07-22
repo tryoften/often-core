@@ -197,19 +197,20 @@ class Pack extends MediaItem {
 			source: this.source,
 			type: this.type,
 			isFavorites: this.isFavorites,
-			isRecents: this.isRecents
+			isRecents: this.isRecents,
+			followersCount: this.followersCount
 		};
 	}
 
 	addFollower() {
-		this.save({
+		this.set({
 			followersCount: this.followersCount + 1
 		});
 	}
 
 	removeFollower() {
 		if (this.followersCount > 0) {
-			this.save({
+			this.set({
 				followersCount: this.followersCount - 1
 			});
 		}
@@ -219,8 +220,7 @@ class Pack extends MediaItem {
 	 * Adds an individual media item to the pack
 	 * @param item
 	 */
-	addItem (item: MediaItem) {
-		var itemObj = item.toJSON();
+	addItem (itemObj: IndexablePackItem) {
 
 		var items = this.items;
 		items.push(itemObj);
@@ -349,7 +349,8 @@ class Pack extends MediaItem {
 			price: this.price || 0,
 			image: this.image || {},
 			items: this.items || [],
-			items_count: this.items_count || this.items.length
+			items_count: this.items_count || this.items.length,
+			followersCount: this.followersCount || 0
 		}, super.toIndexingFormat(), super.toJSON());
 
 		return data;
