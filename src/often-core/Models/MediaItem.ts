@@ -31,6 +31,12 @@ export class MediaItem extends BaseModel implements Indexable {
 	 * @param options
      */
 	constructor(attributes: MediaItemAttributes = {}, options: MediaItemOptions = {generateId: true, autoSync: false}) {
+
+		options = _.defaults(options, {
+			generateId: true,
+			autoSync: false
+		});
+
 		if (!attributes.id && options.generateId) {
 			attributes.id = generateId();
 		}
