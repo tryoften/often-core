@@ -200,8 +200,7 @@ class User extends BaseModel {
 		});
 
 
-		new Subscription(attrs).syncData().then((packSubscription: Subscription) => {
-
+		return new Subscription(attrs).syncData().then((packSubscription: Subscription) => {
 			let subscriptionContents = packSubscription.toIndexingFormat();
 
 			/* If pack subscription doesn't have timeSubscribed defined, then subscribe the user */
@@ -216,10 +215,10 @@ class User extends BaseModel {
 				this.setSubscription(subscriptionContents);
 			}
 			packSubscription.save();
-			return new Pack({ id: packAttributes.id}).syncData();
-		});
 
-		return pack.syncData().then( (syncedPack: Pack) => {
+			return new Pack({ id: packAttributes.id}).syncData();
+
+		}).then( (syncedPack: Pack) => {
 			syncedPack.addFollower();
 			let indexablePack = syncedPack.toIndexingFormat();
 			this.setPack(indexablePack);

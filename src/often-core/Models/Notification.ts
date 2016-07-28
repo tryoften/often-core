@@ -1,4 +1,4 @@
-import BaseModel from './BaseModel';
+import BaseModel, { BaseModelOptions } from './BaseModel';
 import User from './User';
 import { firebase as FirebaseConfig } from '../config';
 import { generate as generateId } from 'shortid';
@@ -13,7 +13,7 @@ export interface NotificationAttributes extends BaseModelAttributes {
     targets?: [User];
 }
 
-export interface NotificationOptions {
+export interface NotificationOptions extends BaseModelOptions {
     autoSync: boolean;
     setObjectMap?: boolean;
     deepSync?: boolean;
