@@ -83,7 +83,6 @@ class User extends BaseModel {
 			type: MediaItemType.pack,
 			source: MediaItemSource.Often,
 			setObjectMap: true,
-			shareCount: 0,
 			premium: false,
 			price: 0.0,
 			image: {
@@ -106,6 +105,12 @@ class User extends BaseModel {
 			} else {
 				resolve(this.favoritesPackId);
 			}
+		});
+	}
+
+	incrementShareCount() {
+		this.set({
+			shareCount: this.shareCount + 1
 		});
 	}
 
@@ -185,14 +190,17 @@ class User extends BaseModel {
 	 */
 	public addPack (packAttributes: PackAttributes, subscriptionAttributes: SubscriptionAttributes = {}): Promise<string> {
 
+
+		//make sure we have a pack id here
+		let pack =  new Pack({ id: packAttributes.id});
 		let attrs = Object.assign({}, subscriptionAttributes, {
 			userId: this.id,
-			itemId: packAttributes.id,
+			itemId: pack.id,
 			mediaItemType: MediaItemType.pack
 		});
 
-		return new Subscription(attrs).syncData().then((packSubscription: Subscription) => {
 
+		return new Subscription(attrs).syncData().then((packSubscription: Subscription) => {
 			let subscriptionContents = packSubscription.toIndexingFormat();
 
 			/* If pack subscription doesn't have timeSubscribed defined, then subscribe the user */
@@ -207,12 +215,16 @@ class User extends BaseModel {
 				this.setSubscription(subscriptionContents);
 			}
 			packSubscription.save();
-			return new Pack(packAttributes).syncData();
-		}).then( (pack: Pack) => {
-			let indexablePack = pack.toIndexingFormat();
+
+			return new Pack({ id: packAttributes.id}).syncData();
+
+		}).then( (syncedPack: Pack) => {
+			syncedPack.addFollower();
+			let indexablePack = syncedPack.toIndexingFormat();
 			this.setPack(indexablePack);
-			pack.setTarget(this, `/users/${this.id}/packs/${pack.id}`);
 			this.save();
+			syncedPack.save();
+			syncedPack.setTarget(this, `/users/${this.id}/packs/${syncedPack.id}`);
 			return indexablePack.id;
 		});
 	}
@@ -225,8 +237,10 @@ class User extends BaseModel {
 	public removePack (packId: string): Promise<string> {
 		return new Pack({id: packId}).syncData().then( (pack: Pack) => {
 			pack.unsetTarget(this, `/users/${this.id}/packs/${pack.id}`);
+			pack.removeFollower();
 			this.unsetPack(packId);
 			this.save();
+			pack.save();
 			return packId;
 		});
 	}
