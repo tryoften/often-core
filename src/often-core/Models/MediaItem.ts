@@ -113,6 +113,10 @@ export class MediaItem extends BaseModel implements Indexable {
 		return this.get('images') || {};
 	}
 
+	get shareCount(): number {
+		return this.get('shareCount') || 0;
+	}
+
 	// Setters
 	set type(value: string) {
 		this.set('type', value);
@@ -126,6 +130,13 @@ export class MediaItem extends BaseModel implements Indexable {
 		this.set('score', value);
 	}
 
+	public incrementShareCount() {
+		this.set({
+			shareCount: this.shareCount + 1
+		});
+	}
+
+
 	public toIndexingFormat(): IndexableObject {
 		var data =  {
 			_id: this.id,
@@ -138,7 +149,8 @@ export class MediaItem extends BaseModel implements Indexable {
 			source: (this.get('source') || '').toString(),
 			description: this.get('description') || '',
 			author: this.get('author') || '',
-			images: this.get('images') || {}
+			images: this.get('images') || {},
+			shareCount: this.get('shareCount') || 0
 		};
 
 		return data;

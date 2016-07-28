@@ -41,9 +41,9 @@ export interface PackAttributes extends MediaItemAttributes {
 	items_count?: number;
 	isFavorites?: boolean;
 	isRecents?: boolean;
-	shareCount?: number;
 	section?: SectionAttributes;
 	backgroundColor?: string;
+	followersCount?: number;
 };
 
 export interface PackOptions extends MediaItemOptions {
@@ -114,7 +114,8 @@ class Pack extends MediaItem {
 			},
 			items: [],
 			isFavorites: false,
-			isRecents: false
+			isRecents: false,
+			followersCount: 0
 		};
 	}
 
@@ -178,6 +179,10 @@ class Pack extends MediaItem {
 		return this.get('backgroundColor');
 	}
 
+	get followersCount(): number {
+		return this.get('followersCount') || 0;
+	}
+
 	getTargetObjectProperties(): any {
 		return {
 			id: this.id,
@@ -192,16 +197,30 @@ class Pack extends MediaItem {
 			source: this.source,
 			type: this.type,
 			isFavorites: this.isFavorites,
-			isRecents: this.isRecents
+			isRecents: this.isRecents,
+			followersCount: this.followersCount
 		};
+	}
+
+	addFollower() {
+		this.set({
+			followersCount: this.followersCount + 1
+		});
+	}
+
+	removeFollower() {
+		if (this.followersCount > 0) {
+			this.set({
+				followersCount: this.followersCount - 1
+			});
+		}
 	}
 
 	/**
 	 * Adds an individual media item to the pack
 	 * @param item
 	 */
-	addItem (item: MediaItem) {
-		var itemObj = item.toJSON();
+	addItem (itemObj: IndexablePackItem) {
 
 		var items = this.items;
 		items.push(itemObj);
@@ -330,7 +349,8 @@ class Pack extends MediaItem {
 			price: this.price || 0,
 			image: this.image || {},
 			items: this.items || [],
-			items_count: this.items_count || this.items.length
+			items_count: this.items_count || this.items.length,
+			followersCount: this.followersCount || 0
 		}, super.toIndexingFormat(), super.toJSON());
 
 		return data;
