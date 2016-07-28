@@ -3,28 +3,18 @@ import User from './User';
 import { firebase as FirebaseConfig } from '../config';
 import { generate as generateId } from 'shortid';
 import BaseModelType from './BaseModelType';
-import { BaseModelAttributes, BaseModelOptions } from './BaseModel';
+import { BaseModelAttributes } from './BaseModel';
 
 export interface NotificationAttributes extends BaseModelAttributes {
     id?: string;
     url?: string;
     creationDate?: Date;
     releaseDate?: Date;
-    target?: String;
+    targets?: [User];
 }
 
 export interface NotificationOptions extends BaseModelOptions {
-    autoSync: boolean;
-    setObjectMap?: boolean;
     deepSync?: boolean;
-    rootRef?: Firebase;
-}
-
-export interface NotificationOptions extends BaseModelOptions {
-    autoSync: boolean;
-    setObjectMap?: boolean;
-    deepSync?: boolean;
-    rootRef?: Firebase;
 }
 
 export interface FirebaseAttributes {
@@ -64,8 +54,8 @@ class Notification extends BaseModel {
         return this.get('releaseDate') || '';
     }
 
-    get target(): string {
-        return this.get('target') || '';
+    get targets(): User[] {
+        return this.get('targets') || [];
     }
 
     get text(): string {
