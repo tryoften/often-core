@@ -182,50 +182,30 @@ class User extends BaseModel {
 		this.set('auth_token', token);
 	}
 
-
 	/**
 	 * Instantiates a pack and adds it to the user's pack collection
 	 * @param packSubAttrs {SubscriptionAttributes} - Object containing pack subscription information
 	 * @returns {Promise<string>} - Returns a promise that resolves to a success message or to an error when rejected
 	 */
 	public addPack (packAttributes: PackAttributes, subscriptionAttributes: SubscriptionAttributes = {}): Promise<string> {
-
-
 		//make sure we have a pack id here
-		let pack =  new Pack({ id: packAttributes.id});
-		let attrs = Object.assign({}, subscriptionAttributes, {
-			userId: this.id,
-			itemId: pack.id,
-			mediaItemType: MediaItemType.pack
-		});
+		let pack = new Pack(packAttributes);
 
-
-		return new Subscription(attrs).syncData().then((packSubscription: Subscription) => {
-			let subscriptionContents = packSubscription.toIndexingFormat();
-
-			/* If pack subscription doesn't have timeSubscribed defined, then subscribe the user */
-			if (!packSubscription.timeSubscribed) {
-				packSubscription.subscribe();
-				this.setSubscription(subscriptionContents);
-			}
-
-			/* If for whatever reason the pack is not set on user then restore it */
-			if (!this.packSubscriptions[subscriptionContents.id]) {
-				packSubscription.updateTimeLastRestored();
-				this.setSubscription(subscriptionContents);
-			}
-			packSubscription.save();
-
-			return new Pack({ id: packAttributes.id}).syncData();
-
-		}).then( (syncedPack: Pack) => {
-			syncedPack.addFollower();
-			let indexablePack = syncedPack.toIndexingFormat();
-			this.setPack(indexablePack);
-			this.save();
-			syncedPack.save();
-			syncedPack.setTarget(this, `/users/${this.id}/packs/${syncedPack.id}`);
-			return indexablePack.id;
+		return new Promise((resolve, reject) => {
+			pack.save(packAttributes, {
+				success: (syncedPack: Pack) => {
+					syncedPack.addFollower();
+					let indexablePack = syncedPack.toIndexingFormat();
+					this.setPack(indexablePack);
+					this.save();
+					syncedPack.save();
+					syncedPack.setTarget(this, `/users/${this.id}/packs/${syncedPack.id}`);
+					resolve(indexablePack.id)
+				},
+				error: (err) => {
+					reject(err);
+				}
+			});
 		});
 	}
 
