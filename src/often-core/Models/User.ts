@@ -188,23 +188,22 @@ class User extends BaseModel {
 	 * @returns {Promise<string>} - Returns a promise that resolves to a success message or to an error when rejected
 	 */
 	public addPack (packAttributes: PackAttributes, subscriptionAttributes: SubscriptionAttributes = {}): Promise<string> {
-		//make sure we have a pack id here
-		let pack = new Pack(packAttributes);
-
-		return new Promise((resolve, reject) => {
-			pack.save(packAttributes, {
-				success: (syncedPack: Pack) => {
-					syncedPack.addFollower();
-					let indexablePack = syncedPack.toIndexingFormat();
-					this.setPack(indexablePack);
-					this.save();
-					syncedPack.save();
-					syncedPack.setTarget(this, `/users/${this.id}/packs/${syncedPack.id}`);
-					resolve(indexablePack.id)
-				},
-				error: (err) => {
-					reject(err);
-				}
+		return new Pack(packAttributes).syncData().then((pack) => {
+			return new Promise((resolve, reject) => {
+				pack.save({}, {
+					success: (syncedPack: Pack) => {
+						syncedPack.addFollower();
+						let indexablePack = syncedPack.toIndexingFormat();
+						this.setPack(indexablePack);
+						this.save();
+						syncedPack.save();
+						syncedPack.setTarget(this, `/users/${this.id}/packs/${syncedPack.id}`);
+						resolve(indexablePack.id)
+					},
+					error: (err) => {
+						reject(err);
+					}
+				});
 			});
 		});
 	}
