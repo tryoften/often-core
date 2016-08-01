@@ -1,4 +1,5 @@
 import { firebase as FirebaseConfig } from '../config';
+import * as _ from 'underscore';
 import BaseModel from '../Models/BaseModel';
 import Subscription, { SubscriptionAttributes } from '../Models/Subscription';
 import Pack, { PackAttributes } from '../Models/Pack';
@@ -6,6 +7,7 @@ import MediaItemType from './MediaItemType';
 import BaseModelType from './BaseModelType';
 import MediaItemSource from "./MediaItemSource";
 import {IndexableObject} from '../Interfaces/Indexable';
+import {GraphableAttributes} from '../Interfaces/Graphable';
 
 export interface UserAttributes {
 	name?: string;
@@ -17,13 +19,21 @@ export interface UserAttributes {
 	};
 }
 
+export interface UserGraphableAttributes extends GraphableAttributes {
+	id: string;
+	type: BaseModelType;
+}
+
 /**
  * This class is responsible for providing granular functionalities (mostly accessors) for users.
  */
 class User extends BaseModel {
 
-	constructor(attributes: any = {}, options?: any) {
+	constructor(attributes: any = {}, options: any = {}) {
 		attributes.type = BaseModelType.user;
+		options = _.defaults(options, {
+			setGraph: true
+		});
 		super(attributes, options);
 	}
 
@@ -116,6 +126,13 @@ class User extends BaseModel {
 			isAdmin: !!this.isAdmin,
 			image: this.get('image')
 		};
+	}
+
+	getTargetGraphProperties(): UserGraphableAttributes {
+		return {
+			id: this.id,
+			type: BaseModelType.user
+		}
 	}
 
 	/**
@@ -248,6 +265,16 @@ class User extends BaseModel {
 	 * @param pack {Pack} - Pack to be added
 	 */
 	private setPack (pack: IndexableObject) {
+
+		/*
+		Update Social Graph:
+			if own Pack
+				user -:Owns-> pack
+			else
+				user -:Follows-> packOwner
+			user -:Follows-> pack
+		*/
+
 		let currentPacks = this.packs;
 		if (!currentPacks[pack.id]) {
 			currentPacks[pack.id] = pack;
@@ -260,6 +287,12 @@ class User extends BaseModel {
 	 * @param packId {string} - Unsets a pack on user's pack collection
 	 */
 	private unsetPack (packId: string) {
+		/*
+		 Update Social Graph:
+			 X user -:Follows-> pack
+			 X user -:Follows-> packOwner
+		 */
+
 		let currentPacks = this.packs;
 		if (currentPacks[packId]) {
 			currentPacks[packId] = null;

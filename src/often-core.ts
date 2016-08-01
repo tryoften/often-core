@@ -26,6 +26,7 @@ export { default as Subscription, SubscriptionAttributes } from './often-core/Mo
 export { default as Image } from './often-core/Models/Image';
 export { default as Notification } from './often-core/Models/Notification';
 export { default as Section, SectionAttributes } from './often-core/Models/Section';
+export { default as GraphModel } from './often-core/Models/GraphModel';
 
 // Collections
 export { default as Categories } from './often-core/Collections/Categories';
