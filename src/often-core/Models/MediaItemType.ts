@@ -7,6 +7,7 @@ export default class MediaItemType extends String {
 	static pack: MediaItemType = 'pack';
 	static quote: MediaItemType = 'quote';
 	static gif: MediaItemType = 'gif';
+	static image: MediaItemType = 'image';
 	static owner: MediaItemType = 'owner';
 
 	static allTypes: MediaItemType[] = [
@@ -15,7 +16,8 @@ export default class MediaItemType extends String {
 		MediaItemType.lyric,
 		MediaItemType.pack,
 		MediaItemType.quote,
-		MediaItemType.gif
+		MediaItemType.gif,
+		MediaItemType.image
 	];
 
 	private static mapping: any;
@@ -27,7 +29,8 @@ export default class MediaItemType extends String {
 				lyric: require('./Lyric').default,
 				pack: require('./Pack').default,
 				quote: require('./Quote').default,
-				gif: require('./GIF').default
+				gif: require('./GIF').default,
+				image: require('./Image').default
 			};
 		}
 		return MediaItemType.mapping;
