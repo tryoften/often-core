@@ -93,7 +93,6 @@ class User extends BaseModel {
 			type: MediaItemType.pack,
 			source: MediaItemSource.Often,
 			setObjectMap: true,
-			shareCount: 0,
 			premium: false,
 			price: 0.0,
 			image: {
@@ -116,6 +115,12 @@ class User extends BaseModel {
 			} else {
 				resolve(this.favoritesPackId);
 			}
+		});
+	}
+
+	incrementShareCount() {
+		this.set({
+			shareCount: this.shareCount + 1
 		});
 	}
 
@@ -194,43 +199,29 @@ class User extends BaseModel {
 		this.set('auth_token', token);
 	}
 
-
 	/**
 	 * Instantiates a pack and adds it to the user's pack collection
 	 * @param packSubAttrs {SubscriptionAttributes} - Object containing pack subscription information
 	 * @returns {Promise<string>} - Returns a promise that resolves to a success message or to an error when rejected
 	 */
 	public addPack (packAttributes: PackAttributes, subscriptionAttributes: SubscriptionAttributes = {}): Promise<string> {
-
-		let attrs = Object.assign({}, subscriptionAttributes, {
-			userId: this.id,
-			itemId: packAttributes.id,
-			mediaItemType: MediaItemType.pack
-		});
-
-		return new Subscription(attrs).syncData().then((packSubscription: Subscription) => {
-
-			let subscriptionContents = packSubscription.toIndexingFormat();
-
-			/* If pack subscription doesn't have timeSubscribed defined, then subscribe the user */
-			if (!packSubscription.timeSubscribed) {
-				packSubscription.subscribe();
-				this.setSubscription(subscriptionContents);
-			}
-
-			/* If for whatever reason the pack is not set on user then restore it */
-			if (!this.packSubscriptions[subscriptionContents.id]) {
-				packSubscription.updateTimeLastRestored();
-				this.setSubscription(subscriptionContents);
-			}
-			packSubscription.save();
-			return new Pack(packAttributes).syncData();
-		}).then( (pack: Pack) => {
-			let indexablePack = pack.toIndexingFormat();
-			this.setPack(indexablePack);
-			pack.setTarget(this, `/users/${this.id}/packs/${pack.id}`);
-			this.save();
-			return indexablePack.id;
+		return new Pack(packAttributes).syncData().then((pack) => {
+			return new Promise((resolve, reject) => {
+				pack.save({}, {
+					success: (syncedPack: Pack) => {
+						syncedPack.addFollower();
+						let indexablePack = syncedPack.toIndexingFormat();
+						this.setPack(indexablePack);
+						this.save();
+						syncedPack.save();
+						syncedPack.setTarget(this, `/users/${this.id}/packs/${syncedPack.id}`);
+						resolve(indexablePack.id)
+					},
+					error: (err) => {
+						reject(err);
+					}
+				});
+			});
 		});
 	}
 
@@ -242,8 +233,10 @@ class User extends BaseModel {
 	public removePack (packId: string): Promise<string> {
 		return new Pack({id: packId}).syncData().then( (pack: Pack) => {
 			pack.unsetTarget(this, `/users/${this.id}/packs/${pack.id}`);
+			pack.removeFollower();
 			this.unsetPack(packId);
 			this.save();
+			pack.save();
 			return packId;
 		});
 	}
