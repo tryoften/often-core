@@ -7,9 +7,10 @@ import MediaItemType from './MediaItemType';
 import BaseModelType from './BaseModelType';
 import MediaItemSource from "./MediaItemSource";
 import {IndexableObject} from '../Interfaces/Indexable';
-import {GraphableAttributes} from '../Interfaces/Graphable';
 
 export interface UserAttributes {
+	id: string;
+	type: BaseModelType;
 	name?: string;
 	firstName: string;
 	isAdmin: boolean;
@@ -19,11 +20,6 @@ export interface UserAttributes {
 	};
 }
 
-export interface UserGraphableAttributes extends GraphableAttributes {
-	id: string;
-	type: BaseModelType;
-}
-
 /**
  * This class is responsible for providing granular functionalities (mostly accessors) for users.
  */
@@ -31,9 +27,6 @@ class User extends BaseModel {
 
 	constructor(attributes: any = {}, options: any = {}) {
 		attributes.type = BaseModelType.user;
-		options = _.defaults(options, {
-			setGraph: true
-		});
 		super(attributes, options);
 	}
 
@@ -85,7 +78,7 @@ class User extends BaseModel {
 	 * Initializes a favorites pack
 	 * @returns {Promise<string>} - Promise resolving to a pack id or an error.
 	 */
-	initFavoritesPack(): Promise<string> {
+	initFavoritesPack(): Promise<Pack> {
 		var favoritesPackAttributes: PackAttributes = {
 			name: this.firstName ? `${this.firstName}'s Favorites` : 'Your Favorites',
 			description: this.firstName ? `${this.firstName}'s favorite selections` : 'Your favorite selections',
@@ -101,20 +94,21 @@ class User extends BaseModel {
 			},
 			items: [],
 			isFavorites: true,
-			isRecents: false
+			isRecents: false,
+			ownerId: this.id
 		};
 
 		return new Promise((resolve, reject) => {
-			if (!this.favoritesPackId) {
-				this.addPack(favoritesPackAttributes).then((packId) => {
+			//if (!this.favoritesPackId) {
+				this.addPack(favoritesPackAttributes).then((pack) => {
 					this.save({
-						favoritesPackId: packId
+						favoritesPackId: pack.id
 					});
-					resolve(packId);
+					resolve(pack);
 				});
-			} else {
-				resolve(this.favoritesPackId);
-			}
+			//} else {
+			//	resolve(this.favoritesPackId);
+			//}
 		});
 	}
 
@@ -126,6 +120,8 @@ class User extends BaseModel {
 
 	getTargetObjectProperties(): UserAttributes {
 		return {
+			id: this.id,
+			type: this.get('type'),
 			name: this.get('name'),
 			firstName: this.firstName || "",
 			isAdmin: !!this.isAdmin,
@@ -133,18 +129,11 @@ class User extends BaseModel {
 		};
 	}
 
-	getTargetGraphProperties(): UserGraphableAttributes {
-		return {
-			id: this.id,
-			type: BaseModelType.user
-		}
-	}
-
 	/**
 	 * Initializes a recents pack for a user
 	 * @returns {Promise<string>} - Promise resolving to a pack id or an error.
 	 */
-	initRecentsPack(): Promise<string> {
+	initRecentsPack(): Promise<Pack> {
 		var recentsPackAttributes: PackAttributes = {
 			name: this.firstName ? `${this.firstName}'s Recents` : 'Your Recents',
 			description: this.firstName ? `${this.firstName}'s recents selections` : 'Your recents selections',
@@ -160,20 +149,21 @@ class User extends BaseModel {
 			},
 			items: [],
 			isFavorites: false,
-			isRecents: true
+			isRecents: true,
+			ownerId: this.id
 		};
 
 		return new Promise((resolve, reject) => {
-			if (!this.recentsPackId) {
-				this.addPack(recentsPackAttributes).then((packId) => {
+			//if (!this.recentsPackId) {
+				this.addPack(recentsPackAttributes).then((pack) => {
 					this.save({
-						recentsPackId: packId
+						recentsPackId: pack.id
 					});
-					resolve(packId);
+					resolve(pack);
 				});
-			} else {
-				resolve(this.recentsPackId);
-			}
+			//} else {
+			//	resolve(this.recentsPackId);
+			//}
 		});
 	}
 
@@ -181,7 +171,7 @@ class User extends BaseModel {
 	 * Initializes a default pack
 	 * @returns {Promise<any>}
 	 */
-	initDefaultPack(): Promise<any> {
+	initDefaultPack(): Promise<Pack> {
 		var defaultPackAttributes: PackAttributes = {
 			id: 'EJDW_ze1-' // DJ Khaled Pack for now
 		};
@@ -204,7 +194,7 @@ class User extends BaseModel {
 	 * @param packSubAttrs {SubscriptionAttributes} - Object containing pack subscription information
 	 * @returns {Promise<string>} - Returns a promise that resolves to a success message or to an error when rejected
 	 */
-	public addPack (packAttributes: PackAttributes, subscriptionAttributes: SubscriptionAttributes = {}): Promise<string> {
+	public addPack (packAttributes: PackAttributes, subscriptionAttributes: SubscriptionAttributes = {}): Promise<Pack> {
 		return new Pack(packAttributes).syncData().then((pack) => {
 			return new Promise((resolve, reject) => {
 				pack.save({}, {
@@ -215,7 +205,7 @@ class User extends BaseModel {
 						this.save();
 						syncedPack.save();
 						syncedPack.setTarget(this, `/users/${this.id}/packs/${syncedPack.id}`);
-						resolve(indexablePack.id)
+						resolve(syncedPack)
 					},
 					error: (err) => {
 						reject(err);
@@ -230,14 +220,14 @@ class User extends BaseModel {
 	 * @param packSubAttrs {SubscriptionAttributes} - object containing subscription data
 	 * @returns {Promise<string>} - Returns a promise that resolves to packId that was removed or to an error when rejected
 	 */
-	public removePack (packId: string): Promise<string> {
+	public removePack (packId: string): Promise<Pack> {
 		return new Pack({id: packId}).syncData().then( (pack: Pack) => {
 			pack.unsetTarget(this, `/users/${this.id}/packs/${pack.id}`);
 			pack.removeFollower();
 			this.unsetPack(packId);
 			this.save();
 			pack.save();
-			return packId;
+			return pack;
 		});
 	}
 
@@ -257,17 +247,7 @@ class User extends BaseModel {
 	 * Sets a pack on user's packs
 	 * @param pack {Pack} - Pack to be added
 	 */
-	private setPack (pack: IndexableObject) {
-
-		/*
-		Update Social Graph:
-			if own Pack
-				user -:Owns-> pack
-			else
-				user -:Follows-> packOwner
-			user -:Follows-> pack
-		*/
-
+	private setPack (pack: any) {
 		let currentPacks = this.packs;
 		if (!currentPacks[pack.id]) {
 			currentPacks[pack.id] = pack;
@@ -280,12 +260,6 @@ class User extends BaseModel {
 	 * @param packId {string} - Unsets a pack on user's pack collection
 	 */
 	private unsetPack (packId: string) {
-		/*
-		 Update Social Graph:
-			 X user -:Follows-> pack
-			 X user -:Follows-> packOwner
-		 */
-
 		let currentPacks = this.packs;
 		if (currentPacks[packId]) {
 			currentPacks[packId] = null;

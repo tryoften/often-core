@@ -44,6 +44,7 @@ export interface PackAttributes extends MediaItemAttributes {
 	section?: SectionAttributes;
 	backgroundColor?: string;
 	followersCount?: number;
+	ownerId?: string;
 };
 
 export interface PackOptions extends MediaItemOptions {
@@ -116,7 +117,8 @@ class Pack extends MediaItem {
 			items: [],
 			isFavorites: false,
 			isRecents: false,
-			followersCount: 0
+			followersCount: 0,
+			ownerId: ''
 		};
 	}
 
@@ -184,6 +186,10 @@ class Pack extends MediaItem {
 		return this.get('followersCount') || 0;
 	}
 
+	get ownerId(): string {
+		return this.get('ownerId');
+	}
+
 	getTargetObjectProperties(): any {
 		return {
 			id: this.id,
@@ -222,18 +228,39 @@ class Pack extends MediaItem {
 	 * @param item
 	 */
 	addItem (itemObj: IndexablePackItem) {
+		return new Promise((resolve, reject) => {
 
-		var items = this.items;
-		items.push(itemObj);
+			var items = this.items;
+			items.push(itemObj);
 
-		this.save({items, items_count: items.length});
+			this.save({items, items_count: items.length}, {
+				success: (newPack: Pack) => {
+					resolve(newPack);
+				},
+				error: (err) => {
+					reject(err);
+				}
+			});
+		});
 	}
 
 	removeItem(item: IndexablePackItem) {
-		var items = this.items;
-		items = _.filter(items, a => a.id !== item.id);
 
-		this.save({items});
+		return new Promise((resolve, reject) => {
+
+			var items = this.items;
+			items = _.filter(items, a => a.id !== item.id);
+
+			this.save({items, items_count: items.length}, {
+				success: (newPack: Pack) => {
+					resolve(newPack);
+				},
+				error: (err) => {
+					reject(err);
+				}
+			});
+		});
+
 	}
 
 	updateFeatured() {
@@ -351,7 +378,8 @@ class Pack extends MediaItem {
 			image: this.image || {},
 			items: this.items || [],
 			items_count: this.items_count || this.items.length,
-			followersCount: this.followersCount || 0
+			followersCount: this.followersCount || 0,
+			ownerId: this.ownerId || ''
 		}, super.toIndexingFormat(), super.toJSON());
 
 		return data;

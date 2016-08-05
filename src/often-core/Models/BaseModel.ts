@@ -3,7 +3,6 @@ import * as _ from 'underscore';
 import { Firebase, ModelSaveOptions } from 'backbone';
 import ObjectMap from './ObjectMap';
 import BaseModelType from "./BaseModelType";
-import GraphModel from './GraphModel';
 const firebase = require('firebase');
 
 export interface BaseModelAttributes {
@@ -21,9 +20,8 @@ export interface BaseModelOptions {
 
 class BaseModel extends Firebase.Model {
 	objectMap: ObjectMap;
-	graph: GraphModel
 
-	constructor (attributes?: BaseModelAttributes, options: BaseModelOptions = {autoSync: false, setObjectMap: false, setGraph: false}) {
+	constructor (attributes?: BaseModelAttributes, options: BaseModelOptions = {autoSync: false, setObjectMap: false}) {
 		super(attributes, options);
 
 		if (options.setObjectMap) {
@@ -44,10 +42,6 @@ class BaseModel extends Firebase.Model {
 				id: attributes.id,
 				type: attributes.type
 			}, options);
-		}
-
-		if (options.setGraph) {
-			this.graph = new GraphModel();
 		}
 	}
 
@@ -118,15 +112,8 @@ class BaseModel extends Firebase.Model {
 	public save(attributes?: any, options?: ModelSaveOptions) {
 		super.save(attributes, options);
 		this.updateTargetsWithProperties();
-		this.updateGraphWithProps();
 	}
 
-	public updateGraphWithProps() {
-		if (this.graph) {
-			let props = this.getTargetGraphProperties();
-			this.graph.updateNode(props);
-		}
-	}
 
 	public updateTargetsWithProperties () {
 		if (this.objectMap) {
