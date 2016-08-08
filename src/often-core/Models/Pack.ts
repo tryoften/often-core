@@ -8,6 +8,7 @@ import MediaItemSource from "./MediaItemSource";
 import Category, { CategoryAttributes } from './Category';
 import { IndexableObject } from '../Interfaces/Indexable';
 import { SectionAttributes } from '../Models/Section';
+import { UserAttributes } from '../Models/User';
 import Featured from './Featured';
 
 export type UserId = string;
@@ -30,6 +31,7 @@ export interface PackAttributes extends MediaItemAttributes {
 		original_url?: string,
 		large_url?: string
 	};
+	owner?: UserAttributes;
 	price?: number;
 	premium?: boolean;
 	featured?: boolean;
@@ -60,8 +62,8 @@ export interface MediaItemInfo {
 }
 
 class Pack extends MediaItem {
-
 	rootURL: Firebase;
+
 	/**
 	 * Designated constructor
 	 *
@@ -183,6 +185,10 @@ class Pack extends MediaItem {
 		return this.get('followersCount') || 0;
 	}
 
+	get owner(): UserAttributes {
+		return this.get('owner');
+	}
+
 	getTargetObjectProperties(): any {
 		return {
 			id: this.id,
@@ -198,7 +204,8 @@ class Pack extends MediaItem {
 			type: this.type,
 			isFavorites: this.isFavorites,
 			isRecents: this.isRecents,
-			followersCount: this.followersCount
+			followersCount: this.followersCount,
+			owner: this.owner
 		};
 	}
 
