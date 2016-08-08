@@ -69,7 +69,7 @@ class Pack extends MediaItem {
 	 * @param attributes {PackAttributes}
 	 * @param options
 	 */
-	constructor(attributes: PackAttributes = {}, options: PackOptions = {autoSync: false, setGraph: true}) {
+	constructor(attributes: PackAttributes = {}, options: PackOptions = {autoSync: false}) {
 		attributes = _.defaults(attributes, {
 			type: MediaItemType.pack,
 			source: MediaItemSource.Often
@@ -79,8 +79,7 @@ class Pack extends MediaItem {
 			autoSync: false,
 			setObjectMap: true,
 			deepSync: false,
-			generateId: true,
-			setGraph: true
+			generateId: true
 		});
 
 		if (!attributes.items) {

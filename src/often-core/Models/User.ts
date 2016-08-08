@@ -25,7 +25,7 @@ export interface UserAttributes {
  */
 class User extends BaseModel {
 
-	constructor(attributes: any = {}, options: any = {}) {
+	constructor(attributes: any = {}, options?: any) {
 		attributes.type = BaseModelType.user;
 		super(attributes, options);
 	}
@@ -78,7 +78,7 @@ class User extends BaseModel {
 	 * Initializes a favorites pack
 	 * @returns {Promise<string>} - Promise resolving to a pack id or an error.
 	 */
-	initFavoritesPack(): Promise<Pack> {
+	initFavoritesPack(): Promise<PackAttributes> {
 		var favoritesPackAttributes: PackAttributes = {
 			name: this.firstName ? `${this.firstName}'s Favorites` : 'Your Favorites',
 			description: this.firstName ? `${this.firstName}'s favorite selections` : 'Your favorite selections',
@@ -99,16 +99,20 @@ class User extends BaseModel {
 		};
 
 		return new Promise((resolve, reject) => {
-			//if (!this.favoritesPackId) {
-				this.addPack(favoritesPackAttributes).then((pack) => {
+			if (!this.favoritesPackId) {
+				this.addPack(favoritesPackAttributes).then((packData) => {
 					this.save({
-						favoritesPackId: pack.id
+						favoritesPackId: packData.id
 					});
-					resolve(pack);
+					resolve(packData);
 				});
-			//} else {
-			//	resolve(this.favoritesPackId);
-			//}
+			} else {
+				resolve({
+					id: this.favoritesPackId,
+					type: MediaItemType.pack,
+					ownerId: this.id
+				});
+			}
 		});
 	}
 
@@ -133,7 +137,7 @@ class User extends BaseModel {
 	 * Initializes a recents pack for a user
 	 * @returns {Promise<string>} - Promise resolving to a pack id or an error.
 	 */
-	initRecentsPack(): Promise<Pack> {
+	initRecentsPack(): Promise<PackAttributes> {
 		var recentsPackAttributes: PackAttributes = {
 			name: this.firstName ? `${this.firstName}'s Recents` : 'Your Recents',
 			description: this.firstName ? `${this.firstName}'s recents selections` : 'Your recents selections',
@@ -154,16 +158,20 @@ class User extends BaseModel {
 		};
 
 		return new Promise((resolve, reject) => {
-			//if (!this.recentsPackId) {
-				this.addPack(recentsPackAttributes).then((pack) => {
+			if (!this.recentsPackId) {
+				this.addPack(recentsPackAttributes).then((packData) => {
 					this.save({
-						recentsPackId: pack.id
+						recentsPackId: packData.id
 					});
-					resolve(pack);
+					resolve(packData);
 				});
-			//} else {
-			//	resolve(this.recentsPackId);
-			//}
+			} else {
+				resolve({
+					id: this.recentsPackId,
+					type: MediaItemType.pack,
+					ownerId: this.id
+				});
+			}
 		});
 	}
 
@@ -194,7 +202,7 @@ class User extends BaseModel {
 	 * @param packSubAttrs {SubscriptionAttributes} - Object containing pack subscription information
 	 * @returns {Promise<string>} - Returns a promise that resolves to a success message or to an error when rejected
 	 */
-	public addPack (packAttributes: PackAttributes, subscriptionAttributes: SubscriptionAttributes = {}): Promise<Pack> {
+	public addPack (packAttributes: PackAttributes, subscriptionAttributes: SubscriptionAttributes = {}): Promise<PackAttributes> {
 		return new Pack(packAttributes).syncData().then((pack) => {
 			return new Promise((resolve, reject) => {
 				pack.save({}, {
@@ -205,7 +213,7 @@ class User extends BaseModel {
 						this.save();
 						syncedPack.save();
 						syncedPack.setTarget(this, `/users/${this.id}/packs/${syncedPack.id}`);
-						resolve(syncedPack)
+						resolve(syncedPack.toIndexingFormat());
 					},
 					error: (err) => {
 						reject(err);
@@ -220,14 +228,14 @@ class User extends BaseModel {
 	 * @param packSubAttrs {SubscriptionAttributes} - object containing subscription data
 	 * @returns {Promise<string>} - Returns a promise that resolves to packId that was removed or to an error when rejected
 	 */
-	public removePack (packId: string): Promise<Pack> {
+	public removePack (packId: string): Promise<PackAttributes> {
 		return new Pack({id: packId}).syncData().then( (pack: Pack) => {
 			pack.unsetTarget(this, `/users/${this.id}/packs/${pack.id}`);
 			pack.removeFollower();
 			this.unsetPack(packId);
 			this.save();
 			pack.save();
-			return pack;
+			return pack.toIndexingFormat();
 		});
 	}
 
@@ -266,7 +274,6 @@ class User extends BaseModel {
 			this.set({ packs: currentPacks });
 		}
 	}
-
 
 }
 

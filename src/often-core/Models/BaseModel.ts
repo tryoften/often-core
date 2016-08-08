@@ -15,7 +15,6 @@ export interface BaseModelOptions {
 	autoSync: boolean;
 	setObjectMap?: boolean;
 	rootRef?: any;
-	setGraph?: boolean;
 }
 
 class BaseModel extends Firebase.Model {
@@ -61,11 +60,6 @@ class BaseModel extends Firebase.Model {
 		return firebase.database();
 	}
 	public getTargetObjectProperties(): any {
-		throw new Error('Not implemented. Must be overridden in derived class');
-	}
-
-
-	public getTargetGraphProperties(): any {
 		throw new Error('Not implemented. Must be overridden in derived class');
 	}
 
