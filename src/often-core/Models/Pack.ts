@@ -8,6 +8,7 @@ import MediaItemSource from "./MediaItemSource";
 import Category, { CategoryAttributes } from './Category';
 import { IndexableObject } from '../Interfaces/Indexable';
 import { SectionAttributes } from '../Models/Section';
+import { UserAttributes } from '../Models/User';
 import Featured from './Featured';
 
 export type UserId = string;
@@ -30,6 +31,7 @@ export interface PackAttributes extends MediaItemAttributes {
 		original_url?: string,
 		large_url?: string
 	};
+	owner?: UserAttributes;
 	price?: number;
 	premium?: boolean;
 	featured?: boolean;
@@ -44,7 +46,6 @@ export interface PackAttributes extends MediaItemAttributes {
 	section?: SectionAttributes;
 	backgroundColor?: string;
 	followersCount?: number;
-	ownerId?: string;
 };
 
 export interface PackOptions extends MediaItemOptions {
@@ -61,8 +62,8 @@ export interface MediaItemInfo {
 }
 
 class Pack extends MediaItem {
-
 	rootURL: Firebase;
+
 	/**
 	 * Designated constructor
 	 *
@@ -116,8 +117,7 @@ class Pack extends MediaItem {
 			items: [],
 			isFavorites: false,
 			isRecents: false,
-			followersCount: 0,
-			ownerId: ''
+			followersCount: 0
 		};
 	}
 
@@ -185,8 +185,8 @@ class Pack extends MediaItem {
 		return this.get('followersCount') || 0;
 	}
 
-	get ownerId(): string {
-		return this.get('ownerId');
+	get owner(): UserAttributes {
+		return this.get('owner');
 	}
 
 	getTargetObjectProperties(): any {
@@ -204,7 +204,8 @@ class Pack extends MediaItem {
 			type: this.type,
 			isFavorites: this.isFavorites,
 			isRecents: this.isRecents,
-			followersCount: this.followersCount
+			followersCount: this.followersCount,
+			owner: this.owner
 		};
 	}
 
@@ -378,7 +379,7 @@ class Pack extends MediaItem {
 			items: this.items || [],
 			items_count: this.items_count || this.items.length,
 			followersCount: this.followersCount || 0,
-			ownerId: this.ownerId || ''
+			owner: this.owner || {}
 		}, super.toIndexingFormat(), super.toJSON());
 
 		return data;

@@ -13,6 +13,7 @@ export interface UserAttributes {
 	type: BaseModelType;
 	name?: string;
 	firstName: string;
+	username: string;
 	isAdmin: boolean;
 	image: {
 		small_url: string;
@@ -54,19 +55,31 @@ class User extends BaseModel {
 		return this.get('pack_subscriptions') || {};
 	}
 
-	get firstName() {
+	get username(): string {
+		return this.get('username')
+	}
+
+	get name(): string {
+		return this.get('name') || `${this.firstName} ${this.lastName}`;
+	}
+
+	get firstName(): string {
 		return this.get('first_name');
 	}
 
-	get favoritesPackId() {
+	get lastName(): string {
+		return this.get('last_name');
+	}
+
+	get favoritesPackId(): string {
 		return this.get('favoritesPackId');
 	}
 
-	get recentsPackId() {
+	get recentsPackId(): string {
 		return this.get('recentsPackId');
 	}
 
-	get isAdmin() {
+	get isAdmin(): boolean {
 		return this.get('isAdmin');
 	}
 
@@ -92,10 +105,10 @@ class User extends BaseModel {
 				small_url: this.get('profile_pic_large') || this.get('profileImageLarge') || '',
 				large_url: this.get('profile_pic_small') || this.get('profileImageSmall') || ''
 			},
+			owner: this.getTargetObjectProperties(),
 			items: [],
 			isFavorites: true,
-			isRecents: false,
-			ownerId: this.id
+			isRecents: false
 		};
 
 		return new Promise((resolve, reject) => {
@@ -110,7 +123,7 @@ class User extends BaseModel {
 				resolve({
 					id: this.favoritesPackId,
 					type: MediaItemType.pack,
-					ownerId: this.id
+					owner: this.getTargetObjectProperties()
 				});
 			}
 		});
@@ -129,7 +142,8 @@ class User extends BaseModel {
 			name: this.get('name'),
 			firstName: this.firstName || "",
 			isAdmin: !!this.isAdmin,
-			image: this.get('image')
+			image: this.get('image'),
+			username: this.get('username')
 		};
 	}
 
@@ -144,6 +158,7 @@ class User extends BaseModel {
 			published: false,
 			type: MediaItemType.pack,
 			source: MediaItemSource.Often,
+			owner: this.getTargetObjectProperties(),
 			setObjectMap: true,
 			premium: false,
 			price: 0.0,
@@ -153,8 +168,7 @@ class User extends BaseModel {
 			},
 			items: [],
 			isFavorites: false,
-			isRecents: true,
-			ownerId: this.id
+			isRecents: true
 		};
 
 		return new Promise((resolve, reject) => {
@@ -169,7 +183,7 @@ class User extends BaseModel {
 				resolve({
 					id: this.recentsPackId,
 					type: MediaItemType.pack,
-					ownerId: this.id
+					owner: this.getTargetObjectProperties()
 				});
 			}
 		});
