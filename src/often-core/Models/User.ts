@@ -8,6 +8,7 @@ import MediaItemSource from "./MediaItemSource";
 import {IndexableObject} from '../Interfaces/Indexable';
 
 export interface UserAttributes {
+	id?: string;
 	name?: string;
 	firstName: string;
 	username: string;
@@ -130,6 +131,7 @@ class User extends BaseModel {
 
 	getTargetObjectProperties(): UserAttributes {
 		return {
+			id: this.id,
 			name: this.get('name'),
 			firstName: this.firstName || "",
 			isAdmin: !!this.isAdmin,
@@ -208,7 +210,8 @@ class User extends BaseModel {
 			return new Promise((resolve, reject) => {
 				pack.save({}, {
 					success: (syncedPack: Pack) => {
-						syncedPack.addFollower();
+						let userAttributes = this.getTargetObjectProperties();
+						syncedPack.addFollower(userAttributes);
 						let indexablePack = syncedPack.toIndexingFormat();
 						this.setPack(indexablePack);
 						this.save();
@@ -231,8 +234,9 @@ class User extends BaseModel {
 	 */
 	public removePack (packId: string): Promise<string> {
 		return new Pack({id: packId}).syncData().then( (pack: Pack) => {
+			let userAttributes = this.getTargetObjectProperties();
 			pack.unsetTarget(this, `/users/${this.id}/packs/${pack.id}`);
-			pack.removeFollower();
+			pack.removeFollower(userAttributes);
 			this.unsetPack(packId);
 			this.save();
 			pack.save();
