@@ -189,6 +189,10 @@ class Pack extends MediaItem {
 		return this.get('owner');
 	}
 
+	get followers(): any {
+		return this.get('followers') || {};
+	}
+
 	getTargetObjectProperties(): any {
 		return {
 			id: this.id,
@@ -205,22 +209,27 @@ class Pack extends MediaItem {
 			isFavorites: this.isFavorites,
 			isRecents: this.isRecents,
 			followersCount: this.followersCount,
-			owner: this.owner
+			owner: this.owner,
+			followers: this.followers
 		};
 	}
 
-	addFollower() {
+	addFollower(userData: UserAttributes) {
+		let followers = this.followers;
+		followers[userData.id] = userData;
 		this.set({
-			followersCount: this.followersCount + 1
+			followers: followers,
+			followersCount: Object.keys(followers).length
 		});
 	}
 
-	removeFollower() {
-		if (this.followersCount > 0) {
-			this.set({
-				followersCount: this.followersCount - 1
-			});
-		}
+	removeFollower(userData: UserAttributes) {
+		let followers = this.followers;
+		delete followers[userData.id];
+		this.set({
+			followers: followers,
+			followersCount: Object.keys(followers).length
+		});
 	}
 
 	/**
@@ -357,7 +366,8 @@ class Pack extends MediaItem {
 			image: this.image || {},
 			items: this.items || [],
 			items_count: this.items_count || this.items.length,
-			followersCount: this.followersCount || 0
+			followersCount: this.followersCount || 0,
+			followers: this.followers || {}
 		}, super.toIndexingFormat(), super.toJSON());
 
 		return data;
