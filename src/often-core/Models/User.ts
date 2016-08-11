@@ -91,8 +91,8 @@ class User extends BaseModel {
 	 */
 	initFavoritesPack(): Promise<string> {
 		var favoritesPackAttributes: PackAttributes = {
-			name: this.firstName ? `${this.firstName}'s Favorites` : 'Your Favorites',
-			description: this.firstName ? `${this.firstName}'s favorite selections` : 'Your favorite selections',
+			name: this.firstName ? `${this.firstName}'s Pack` : 'Your Pack',
+			description: this.firstName ? `${this.firstName}'s favorite gifs, quotes and images` : 'Your favorite gifs, quotes and images',
 			published: false,
 			type: MediaItemType.pack,
 			source: MediaItemSource.Often,
@@ -100,8 +100,8 @@ class User extends BaseModel {
 			premium: false,
 			price: 0.0,
 			image: {
-				small_url: this.get('profile_pic_large') || this.get('profileImageLarge') || '',
-				large_url: this.get('profile_pic_small') || this.get('profileImageSmall') || ''
+				large_url: this.get('profile_pic_large') || this.get('profileImageLarge') || '',
+				small_url: this.get('profile_pic_small') || this.get('profileImageSmall') || ''
 			},
 			owner: this.getTargetObjectProperties(),
 			items: [],
