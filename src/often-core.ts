@@ -1,7 +1,7 @@
 // Load DB
 import { firebase as FirebaseConfig } from './often-core/config';
 const firebase = require('firebase');
-export var firebaseApp = firebase.initializeApp(FirebaseConfig.credentials);
+var firebaseApp = firebase.initializeApp(FirebaseConfig.credentials);
 console.log("Initialized Firebase (main)", FirebaseConfig.credentials);
 
 // Models
