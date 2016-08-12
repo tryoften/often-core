@@ -8,8 +8,9 @@ import MediaItemSource from "./MediaItemSource";
 import Category, { CategoryAttributes } from './Category';
 import { IndexableObject } from '../Interfaces/Indexable';
 import { SectionAttributes } from '../Models/Section';
-import { UserAttributes } from '../Models/User';
+import User, { UserAttributes } from '../Models/User';
 import Featured from './Featured';
+
 
 export type UserId = string;
 export type PackMeta = Object;
@@ -45,6 +46,7 @@ export interface PackAttributes extends MediaItemAttributes {
 	isRecents?: boolean;
 	section?: SectionAttributes;
 	backgroundColor?: string;
+	followers?: any;
 	followersCount?: number;
 };
 
@@ -221,6 +223,7 @@ class Pack extends MediaItem {
 			followers: followers,
 			followersCount: Object.keys(followers).length
 		});
+		this.updateFollowersInUserOwner(this.toIndexingFormat());
 	}
 
 	removeFollower(userData: UserAttributes) {
@@ -229,6 +232,17 @@ class Pack extends MediaItem {
 		this.set({
 			followers: followers,
 			followersCount: Object.keys(followers).length
+		});
+		this.updateFollowersInUserOwner(this.toIndexingFormat());
+	}
+
+	updateFollowersInUserOwner(attrs: PackAttributes) {
+		let userOwner = new User({ id: attrs.owner.id });
+		userOwner.syncData().then(syncedUserOwner => {
+			syncedUserOwner.save({
+				followers: attrs.followers,
+				followersCount: attrs.followersCount
+			});
 		});
 	}
 

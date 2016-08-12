@@ -211,7 +211,9 @@ class User extends BaseModel {
 				pack.save({}, {
 					success: (syncedPack: Pack) => {
 						let userAttributes = this.getTargetObjectProperties();
-						syncedPack.addFollower(userAttributes);
+						if (syncedPack.owner.id !== this.id) {
+							syncedPack.addFollower(userAttributes);
+						}
 						let indexablePack = syncedPack.toIndexingFormat();
 						this.setPack(indexablePack);
 						this.save();
@@ -262,10 +264,13 @@ class User extends BaseModel {
 	 */
 	private setPack (pack: IndexableObject) {
 		let currentPacks = this.packs;
-		if (!currentPacks[pack.id]) {
-			currentPacks[pack.id] = pack;
-			this.set({ packs: currentPacks });
-		}
+		currentPacks[pack.id] = pack;
+		let numPacks = Object.keys(currentPacks).length;
+		this.set({
+			packs: currentPacks,
+			packsCount: numPacks,
+			followingCount: numPacks
+		});
 	}
 
 	/**
@@ -274,10 +279,13 @@ class User extends BaseModel {
 	 */
 	private unsetPack (packId: string) {
 		let currentPacks = this.packs;
-		if (currentPacks[packId]) {
-			currentPacks[packId] = null;
-			this.set({ packs: currentPacks });
-		}
+		delete currentPacks[packId];
+		let numPacks = Object.keys(currentPacks).length;
+		this.set({
+			packs: currentPacks,
+			packsCount: numPacks,
+			followingCount: numPacks
+		});
 	}
 }
 
