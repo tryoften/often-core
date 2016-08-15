@@ -54,7 +54,7 @@ class User extends BaseModel {
 	}
 
 	get username(): string {
-		return this.get('username')
+		return this.get('username') || '';
 	}
 
 	get name(): string {
@@ -136,7 +136,7 @@ class User extends BaseModel {
 			firstName: this.firstName || "",
 			isAdmin: !!this.isAdmin,
 			image: this.get('image'),
-			username: this.get('username')
+			username: this.username
 		};
 	}
 
