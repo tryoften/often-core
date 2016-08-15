@@ -54,7 +54,7 @@ class User extends BaseModel {
 	}
 
 	get username(): string {
-		return this.get('username')
+		return this.get('username') || '';
 	}
 
 	get name(): string {
@@ -136,7 +136,7 @@ class User extends BaseModel {
 			firstName: this.firstName || "",
 			isAdmin: !!this.isAdmin,
 			image: this.get('image'),
-			username: this.get('username')
+			username: this.username
 		};
 	}
 
@@ -269,7 +269,7 @@ class User extends BaseModel {
 		this.set({
 			packs: currentPacks,
 			packsCount: numPacks,
-			followingCount: numPacks
+			followingCount: numPacks - 2 // Count excludes recents and favorites packs
 		});
 	}
 
@@ -284,7 +284,7 @@ class User extends BaseModel {
 		this.set({
 			packs: currentPacks,
 			packsCount: numPacks,
-			followingCount: numPacks
+			followingCount: numPacks - 2 // Count excludes recents and favorites packs
 		});
 	}
 }
