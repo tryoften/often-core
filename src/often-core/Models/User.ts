@@ -269,7 +269,7 @@ class User extends BaseModel {
 		this.set({
 			packs: currentPacks,
 			packsCount: numPacks,
-			followingCount: numPacks
+			followingCount: numPacks - 2 // Count excludes recents and favorites packs
 		});
 	}
 
@@ -284,7 +284,7 @@ class User extends BaseModel {
 		this.set({
 			packs: currentPacks,
 			packsCount: numPacks,
-			followingCount: numPacks
+			followingCount: numPacks - 2 // Count excludes recents and favorites packs
 		});
 	}
 }
