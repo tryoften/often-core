@@ -39,6 +39,10 @@ export default class Owner extends MediaItem {
 		return this.get('quotes');
 	}
 
+	get images(): { [key: string]: IndexableObject } {
+		return this.get('images') || {};
+	}
+
 	get quotes_count(): number {
 		return Object.keys(this.get('quotes')).length || 0;
 	}
@@ -49,6 +53,12 @@ export default class Owner extends MediaItem {
 
 	set quotes(value: { [key: string]: IndexableObject }) {
 		this.set('quotes', value);
+	}
+
+	addImage(imageAttrs: IndexableObject) {
+		let imgs = this.images;
+		imgs[imageAttrs.id] = imageAttrs;
+		this.set('images', imgs);
 	}
 
 	set name(value: string) {
