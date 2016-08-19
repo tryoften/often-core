@@ -195,10 +195,6 @@ class Pack extends MediaItem {
 		return this.get('followers') || {};
 	}
 
-	get creation_time(): string {
-		return this.get('creation_time') || '';
-	}
-
 	getTargetObjectProperties(): any {
 		return {
 			id: this.id,
