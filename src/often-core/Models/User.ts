@@ -132,11 +132,11 @@ class User extends BaseModel {
 	getTargetObjectProperties(): UserAttributes {
 		return {
 			id: this.id,
-			name: this.get('name'),
+			name: this.get('name') || '',
 			firstName: this.firstName || "",
 			isAdmin: !!this.isAdmin,
 			image: this.get('image'),
-			username: this.username
+			username: this.username || ''
 		};
 	}
 
