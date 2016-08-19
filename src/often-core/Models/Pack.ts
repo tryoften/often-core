@@ -80,7 +80,7 @@ class Pack extends MediaItem {
 
 		options = _.defaults(options, {
 			autoSync: false,
-			setObjectMap: true,
+			setObjectMap: false,
 			deepSync: false,
 			generateId: true
 		});
@@ -124,7 +124,7 @@ class Pack extends MediaItem {
 	}
 
 	get name(): string {
-		return this.get('name');
+		return this.get('name') || '';
 	}
 
 	set name(value: string) {
@@ -132,11 +132,11 @@ class Pack extends MediaItem {
 	}
 
 	get description(): string {
-		return this.get('description');
+		return this.get('description') || '';
 	}
 
 	get published(): boolean {
-		return this.get('published');
+		return this.get('published') || false;
 	}
 
 	get items(): IndexablePackItem[] {
@@ -148,7 +148,7 @@ class Pack extends MediaItem {
 	}
 
 	get items_count(): number {
-		return this.get('items_count') || this.items.length;
+		return this.get('items_count') || this.items.length || 0;
 	}
 
 	get price(): number {
@@ -160,19 +160,19 @@ class Pack extends MediaItem {
 	}
 
 	get premium(): boolean {
-		return this.get('premium');
+		return this.get('premium') || false;
 	}
 
 	get featured(): boolean {
-		return this.get('featured');
+		return this.get('featured') || false;
 	}
 
 	get isFavorites(): boolean {
-		return this.get('isFavorites');
+		return this.get('isFavorites') || false;
 	}
 
 	get isRecents(): boolean {
-		return this.get('isRecents');
+		return this.get('isRecents') || false;
 	}
 
 	get section(): SectionAttributes {
@@ -180,7 +180,7 @@ class Pack extends MediaItem {
 	}
 
 	get backgroundColor(): string {
-		return this.get('backgroundColor');
+		return this.get('backgroundColor') || '';
 	}
 
 	get followersCount(): number {
@@ -188,11 +188,15 @@ class Pack extends MediaItem {
 	}
 
 	get owner(): UserAttributes {
-		return this.get('owner');
+		return this.get('owner') || {};
 	}
 
 	get followers(): any {
 		return this.get('followers') || {};
+	}
+
+	get creation_time(): string {
+		return this.get('creation_time') || '';
 	}
 
 	getTargetObjectProperties(): any {
